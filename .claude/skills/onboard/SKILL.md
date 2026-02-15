@@ -26,6 +26,7 @@ One-time calibration session. Ask ~20 questions one at a time (dynamically addin
 | **O6** | Generate `roadmap_order` respecting prerequisites |
 | **O7** | Dynamic deepening: if user reveals a weakness or low confidence in an area, add 2-3 follow-up questions to understand the gap better |
 | **O8** | NEVER ask for confirmation before writing files — all writes are automatic and mandatory |
+| **O9** | Always present options as a numbered list (1. 2. 3. …) — never inline with slashes or commas |
 
 ## Flow
 
@@ -46,33 +47,106 @@ Greet the user warmly in Spanish. Ask for their name. Explain:
 
 Ask questions using Kolb + VARK frameworks. **One question per message, wait for response before next.**
 
+**IMPORTANT [O9]:** Every question that offers choices MUST present them as a numbered list. Example format:
+> ¿Cuánto tiempo puedes concentrarte antes de necesitar un descanso?
+> 1. 15 minutos
+> 2. 30 minutos
+> 3. 45 minutos
+> 4. 1 hora o más
+
+Never list options inline (e.g. "a / b / c" or "a, b, c"). Always use a numbered list.
+
 **Block: Learning Style (6 questions)**
-1. When learning something new, do you prefer examples, theory, diagrams, or hands-on practice?
-2. When you get stuck on a problem, what's your first reaction? (re-read, search examples, ask someone, try different approach)
-3. How long are your ideal study sessions? (15-30 min / 30-60 min / 1-2 hours / 2+ hours)
-4. If you had to explain a sorting algorithm to a friend, how would you do it? (step-by-step, analogy, diagram, code)
-5. How do you feel about multiple-choice exams? (comfortable / prefer open-ended / anxious / depends on topic)
-6. What's your biggest concern about the EGEL? (breadth of topics / depth needed / time pressure / specific area)
+1. When learning something new, do you prefer:
+   1. Examples
+   2. Theory
+   3. Diagrams
+   4. Hands-on practice
+2. When you get stuck on a problem, what's your first reaction?
+   1. Re-read the material
+   2. Search for examples
+   3. Ask someone
+   4. Try a different approach
+3. How long are your ideal study sessions?
+   1. 15–30 minutes
+   2. 30–60 minutes
+   3. 1–2 hours
+   4. 2+ hours
+4. If you had to explain a sorting algorithm to a friend, how would you do it?
+   1. Step-by-step
+   2. Analogy
+   3. Diagram
+   4. Code
+5. How do you feel about multiple-choice exams?
+   1. Comfortable
+   2. Prefer open-ended
+   3. Anxious
+   4. Depends on the topic
+6. What's your biggest concern about the EGEL?
+   1. Breadth of topics
+   2. Depth needed
+   3. Time pressure
+   4. A specific area
 
 **Block: VARK (4 questions)**
-7. When studying, which helps you most? (reading text / watching videos / listening to explanations / doing exercises)
-8. What kind of feedback helps you learn? (detailed explanations / just correct answer / encouragement first then correction / examples of correct approach)
-9. How long can you maintain focus before needing a break? (15 min / 30 min / 45 min / 1 hour+)
+7. When studying, which helps you most?
+   1. Reading text
+   2. Watching videos
+   3. Listening to explanations
+   4. Doing exercises
+8. What kind of feedback helps you learn?
+   1. Detailed explanations
+   2. Just the correct answer
+   3. Encouragement first, then correction
+   4. Examples of the correct approach
+9. How long can you maintain focus before needing a break?
+   1. 15 minutes
+   2. 30 minutes
+   3. 45 minutes
+   4. 1 hour or more
 10. Do you prefer to understand one topic deeply or cover many topics broadly first?
+    1. One topic deeply
+    2. Many topics broadly first
 
 **Block: Stress & Motivation (6 questions)**
-11. What motivates you most? (seeing progress stats / competing with yourself / intrinsic understanding / completing milestones)
-12. On a scale of 1-5, how anxious are you about the EGEL? (1=calm, 5=very anxious)
-13. Have you attempted the EGEL before? If yes, how did it go?
-14. When you fail a quiz, how do you typically feel? (frustrated / motivated to retry / indifferent / discouraged)
-15. When you're struggling, what would you want the tutor to do? (change approach / give a break / show easier example / encourage you)
-16. How many hours per day can you dedicate to studying? (30 min / 1 hour / 2 hours / 3+ hours)
+11. What motivates you most?
+    1. Seeing progress stats
+    2. Competing with yourself
+    3. Intrinsic understanding
+    4. Completing milestones
+12. On a scale of 1–5, how anxious are you about the EGEL?
+    1. 1 — Calm
+    2. 2
+    3. 3
+    4. 4
+    5. 5 — Very anxious
+13. Have you attempted the EGEL before? If yes, how did it go? (open-ended — no numbered options)
+14. When you fail a quiz, how do you typically feel?
+    1. Frustrated
+    2. Motivated to retry
+    3. Indifferent
+    4. Discouraged
+15. When you're struggling, what would you want the tutor to do?
+    1. Change the approach
+    2. Suggest a break
+    3. Show an easier example
+    4. Encourage me
+16. How many hours per day can you dedicate to studying?
+    1. 30 minutes
+    2. 1 hour
+    3. 2 hours
+    4. 3+ hours
 
 **Block: Self-Assessment Baseline (4 questions)**
-17. Rate your confidence in Área 1 — Algoritmia (algorithms, data structures, discrete math, logic): (1-5)
-18. Rate your confidence in Área 2 — Software de Base (architecture, OS, compilers, networks): (1-5)
-19. Rate your confidence in Área 3 — Software de Aplicación (software eng, languages, databases, security): (1-5)
-20. Rate your confidence in Área 4 — Cómputo Inteligente (AI, data mining, distributed computing): (1-5)
+17. Rate your confidence in Área 1 — Algoritmia (algorithms, data structures, discrete math, logic):
+    1. 1 — No confidence
+    2. 2
+    3. 3
+    4. 4
+    5. 5 — Very confident
+18. Rate your confidence in Área 2 — Software de Base (architecture, OS, compilers, networks): (same 1–5 scale)
+19. Rate your confidence in Área 3 — Software de Aplicación (software eng, languages, databases, security): (same 1–5 scale)
+20. Rate your confidence in Área 4 — Cómputo Inteligente (AI, data mining, distributed computing): (same 1–5 scale)
 
 ### 3b. Dynamic Deepening on Weaknesses [O7]
 
