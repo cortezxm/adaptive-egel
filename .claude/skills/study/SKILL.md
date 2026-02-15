@@ -7,7 +7,7 @@ description: "Use this skill when the user runs /study, says they want to study,
 
 ## Purpose
 
-Daily study session. Load the next topic from the roadmap, present it adapted to the user's psychological profile, detect stress passively, and update progress state.
+Socratic study session. Brief context of the topic, then 5-8 short questions that guide the user to discover concepts themselves. No long text blocks. If the user answers wrong: brief explanation + move on.
 
 ## MANDATORY Actions
 
@@ -20,7 +20,7 @@ Daily study session. Load the next topic from the roadmap, present it adapted to
 | **G5** | If a state file is missing → create defaults and continue (never crash) |
 | **S1** | Load the topic file BEFORE presenting content (lazy loading) |
 | **S2** | Apply `psyche.json` calibration BEFORE the first content message |
-| **S3** | NEVER paste raw .md — always synthesize and adapt |
+| **S3** | NEVER paste raw .md or long text blocks — use Socratic questions instead |
 | **S4** | Label the topic with its EGEL Area at the start (e.g., "Área 1: Algoritmia") |
 | **S5** | Cover both Satisfactorio AND Sobresaliente objectives |
 | **S6** | Execute passive burnout detection throughout the session |
@@ -72,16 +72,41 @@ Before presenting any content, apply `psyche.json`:
 - `pace: "fast"` → denser content, fewer pauses
 - `preferred_feedback` → calibrate encouragement style
 
-### 6. Present Content [S3, S5, G1]
+### 6. Socratic Session [S3, S5, G1]
 
-Present the material in Spanish, synthesized and adapted. **Never paste the raw .md file.** Structure:
+**NEVER dump long text blocks.** The session is question-driven, not lecture-driven.
 
-1. **Overview** — What is this topic and why it matters for the EGEL (2-3 sentences)
-2. **Core Concepts** — The key ideas, calibrated to learning style. Use the guide content as source but rewrite for the user's profile.
-3. **Example or Analogy** — One concrete example or real-world analogy
-4. **Key Points: Nivel Satisfactorio** — What you need to know for a passing score
-5. **Key Points: Nivel Sobresaliente** — What takes you to excellence (deeper analysis, edge cases)
-6. **Comprehension Check** — One ungraded question to verify understanding (not a quiz, just engagement)
+#### 6a. Brief Context (2-3 sentences max)
+
+Give a short context of the topic: what it is, why it matters for the EGEL, and what subtopics you'll explore. This is the ONLY expository text in the session.
+
+#### 6b. Socratic Questions (5-8 questions, one at a time)
+
+Ask short, focused questions that guide the user to discover the concepts. **One question per message, wait for response.**
+
+- Start with Nivel Satisfactorio concepts (fundamental)
+- Progress to Nivel Sobresaliente concepts (advanced) in later questions
+- Calibrate question style to `psyche.json` learning style:
+  - `examples` → "¿Qué pasaría si...?", scenario-based
+  - `theory` → "¿Por qué...?", "¿Cuál es la diferencia entre...?"
+  - `visual` → include small diagrams/tables in the question
+  - `kinesthetic` → "Traza paso a paso...", "¿Qué resultado da...?"
+
+#### 6c. Error Handling
+
+When the user answers incorrectly:
+1. **Brief explanation** (2-3 sentences max) of why it's incorrect and what the correct answer is
+2. **One key insight** to anchor the concept
+3. **Move to the next question** — do not re-ask the same question
+
+Do NOT give hints or re-ask. Explain briefly and advance.
+
+#### 6d. Correct Answer Handling
+
+When the user answers correctly:
+1. **Brief confirmation** (1 sentence)
+2. **One additional insight** that deepens understanding (optional, only if relevant)
+3. Move to next question
 
 ### 7. Passive Burnout Detection [S6]
 

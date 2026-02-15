@@ -7,7 +7,7 @@ description: "Use this skill when the user runs /onboard, wants to start, set up
 
 ## Purpose
 
-One-time calibration session. Ask ~20 questions one at a time, generate `psyche.json` and initialize `progress.json` with all 15 topics and a prerequisite-respecting roadmap.
+One-time calibration session. Ask ~20 questions one at a time (dynamically adding more when weaknesses are detected), then IMMEDIATELY write `psyche.json` and initialize `progress.json`. No confirmation prompts — writing is mandatory and automatic.
 
 ## MANDATORY Actions
 
@@ -21,9 +21,11 @@ One-time calibration session. Ask ~20 questions one at a time, generate `psyche.
 | **O1** | Check idempotency: if `psyche.json` exists and `status` is not `bootstrap-default`, ask user if they want to recalibrate |
 | **O2** | One question per message (never two together) |
 | **O3** | Get user's name in the welcome message |
-| **O4** | Write `psyche.json` only AFTER all questions are answered (not during) |
+| **O4** | Write `psyche.json` IMMEDIATELY after all questions — NO confirmation prompt, writing is mandatory |
 | **O5** | Initialize `progress.json` with all 15 topics from `index_map.json` |
 | **O6** | Generate `roadmap_order` respecting prerequisites |
+| **O7** | Dynamic deepening: if user reveals a weakness or low confidence in an area, add 2-3 follow-up questions to understand the gap better |
+| **O8** | NEVER ask for confirmation before writing files — all writes are automatic and mandatory |
 
 ## Flow
 
@@ -72,6 +74,20 @@ Ask questions using Kolb + VARK frameworks. **One question per message, wait for
 19. Rate your confidence in Área 3 — Software de Aplicación (software eng, languages, databases, security): (1-5)
 20. Rate your confidence in Área 4 — Cómputo Inteligente (AI, data mining, distributed computing): (1-5)
 
+### 3b. Dynamic Deepening on Weaknesses [O7]
+
+After the self-assessment block (Q17-Q20), if ANY area has confidence ≤ 2:
+- Ask 2-3 follow-up questions to understand the weakness better:
+  - "¿Qué temas específicos de [área] te resultan más difíciles?"
+  - "¿Has estudiado [área] formalmente o es algo que no has visto?"
+  - "¿Hay algún subtema dentro de [área] que sí domines?"
+
+Also during any block, if the user's response reveals anxiety, confusion, or a specific gap:
+- Add a targeted follow-up to understand depth of the gap
+- Example: if user says "algorithms stress me out" → "¿Es la parte matemática o la implementación lo que te genera más estrés?"
+
+The total interview may be 20-28 questions depending on how many follow-ups are triggered.
+
 ### 4. Silent Analysis
 
 After all questions, analyze responses internally:
@@ -83,9 +99,9 @@ After all questions, analyze responses internally:
 - Generate personalized strategies for frustration, streak breaks, high stress
 - Use self-assessment (Q17-Q20) to influence initial roadmap ordering
 
-### 5. Write psyche.json [O4, G4]
+### 5. Write psyche.json [O4, O8, G4]
 
-Read `user_profile/psyche.json`, then overwrite with complete profile:
+**IMMEDIATELY after analysis — do NOT ask the user for confirmation.** Read `user_profile/psyche.json`, then overwrite with complete profile:
 
 ```json
 {
