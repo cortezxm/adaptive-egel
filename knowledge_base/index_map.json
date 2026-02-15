@@ -1,0 +1,154 @@
+{
+  "topics": [
+    {
+      "id": "discrete-mathematics",
+      "title": "Matemáticas Discretas",
+      "egel_area": 1,
+      "file": "guias/discrete-mathematics.md",
+      "difficulty": "beginner",
+      "prerequisites": [],
+      "estimated_time_minutes": 45,
+      "subtopics": ["conjuntos", "relaciones", "grafos", "logica-proposicional", "combinatoria"]
+    },
+    {
+      "id": "computational-logic",
+      "title": "Lógica Computacional",
+      "egel_area": 1,
+      "file": "guias/computational-logic.md",
+      "difficulty": "beginner",
+      "prerequisites": ["discrete-mathematics"],
+      "estimated_time_minutes": 40,
+      "subtopics": ["logica-predicados", "inferencia", "verificacion-formal", "logica-temporal"]
+    },
+    {
+      "id": "algorithmics-analysis-design",
+      "title": "Análisis y Diseño de Algoritmos",
+      "egel_area": 1,
+      "file": "guias/algorithmics-analysis-design.md",
+      "difficulty": "intermediate",
+      "prerequisites": ["discrete-mathematics"],
+      "estimated_time_minutes": 60,
+      "subtopics": ["complejidad", "divide-y-venceras", "programacion-dinamica", "algoritmos-voraces", "backtracking"]
+    },
+    {
+      "id": "algorithmics-analysis-design-2",
+      "title": "Análisis y Diseño de Algoritmos (Avanzado)",
+      "egel_area": 1,
+      "file": "guias/algorithmics-analysis-design-2.md",
+      "difficulty": "intermediate",
+      "prerequisites": ["algorithmics-analysis-design"],
+      "estimated_time_minutes": 50,
+      "subtopics": ["np-completitud", "algoritmos-aproximacion", "algoritmos-aleatorizados", "analisis-amortizado"]
+    },
+    {
+      "id": "data-structures",
+      "title": "Estructuras de Datos",
+      "egel_area": 1,
+      "file": "guias/data-structures.md",
+      "difficulty": "intermediate",
+      "prerequisites": ["algorithmics-analysis-design"],
+      "estimated_time_minutes": 55,
+      "subtopics": ["arboles", "grafos", "tablas-hash", "colas-prioridad", "estructuras-avanzadas"]
+    },
+    {
+      "id": "programming-languages",
+      "title": "Lenguajes de Programación",
+      "egel_area": 3,
+      "file": "guias/programming-languages.md",
+      "difficulty": "beginner",
+      "prerequisites": [],
+      "estimated_time_minutes": 50,
+      "subtopics": ["paradigmas", "tipado", "compilacion-vs-interpretacion", "gestion-memoria", "concurrencia"]
+    },
+    {
+      "id": "computer-architecture-os",
+      "title": "Arquitectura de Computadoras y Sistemas Operativos",
+      "egel_area": 2,
+      "file": "guias/computer-architecture-os.md",
+      "difficulty": "intermediate",
+      "prerequisites": [],
+      "estimated_time_minutes": 60,
+      "subtopics": ["cpu-memoria", "jerarquia-memoria", "procesos-hilos", "planificacion", "sistemas-archivos"]
+    },
+    {
+      "id": "computer-networks",
+      "title": "Redes de Computadoras",
+      "egel_area": 2,
+      "file": "guias/computer-networks.md",
+      "difficulty": "intermediate",
+      "prerequisites": ["computer-architecture-os"],
+      "estimated_time_minutes": 55,
+      "subtopics": ["modelo-osi-tcp", "direccionamiento-ip", "protocolos-transporte", "enrutamiento", "seguridad-red"]
+    },
+    {
+      "id": "compilers",
+      "title": "Compiladores",
+      "egel_area": 2,
+      "file": "guias/compilers.md",
+      "difficulty": "advanced",
+      "prerequisites": ["programming-languages", "computational-logic"],
+      "estimated_time_minutes": 60,
+      "subtopics": ["analisis-lexico", "analisis-sintactico", "analisis-semantico", "generacion-codigo", "optimizacion"]
+    },
+    {
+      "id": "databases",
+      "title": "Bases de Datos",
+      "egel_area": 3,
+      "file": "guias/databases.md",
+      "difficulty": "intermediate",
+      "prerequisites": ["discrete-mathematics"],
+      "estimated_time_minutes": 55,
+      "subtopics": ["modelo-relacional", "normalizacion", "sql", "transacciones", "diseno-er"]
+    },
+    {
+      "id": "software-engineering",
+      "title": "Ingeniería de Software",
+      "egel_area": 3,
+      "file": "guias/software-engineering.md",
+      "difficulty": "intermediate",
+      "prerequisites": ["programming-languages"],
+      "estimated_time_minutes": 50,
+      "subtopics": ["ciclos-vida", "requerimientos", "diseno-software", "pruebas", "gestion-proyectos"]
+    },
+    {
+      "id": "information-security",
+      "title": "Seguridad Informática",
+      "egel_area": 3,
+      "file": "guias/information-security.md",
+      "difficulty": "intermediate",
+      "prerequisites": ["computer-networks"],
+      "estimated_time_minutes": 45,
+      "subtopics": ["criptografia", "autenticacion", "control-acceso", "vulnerabilidades", "politicas-seguridad"]
+    },
+    {
+      "id": "artificial-intelligence",
+      "title": "Inteligencia Artificial",
+      "egel_area": 4,
+      "file": "guias/artificial-intelligence.md",
+      "difficulty": "advanced",
+      "prerequisites": ["discrete-mathematics", "data-structures"],
+      "estimated_time_minutes": 60,
+      "subtopics": ["busqueda", "aprendizaje-automatico", "redes-neuronales", "logica-difusa", "agentes-inteligentes"]
+    },
+    {
+      "id": "data-mining",
+      "title": "Minería de Datos",
+      "egel_area": 4,
+      "file": "guias/data-mining.md",
+      "difficulty": "advanced",
+      "prerequisites": ["databases", "artificial-intelligence"],
+      "estimated_time_minutes": 50,
+      "subtopics": ["preprocesamiento", "clasificacion", "clustering", "reglas-asociacion", "evaluacion-modelos"]
+    },
+    {
+      "id": "distributed-computing",
+      "title": "Cómputo Distribuido",
+      "egel_area": 4,
+      "file": "guias/distributed-computing.md",
+      "difficulty": "advanced",
+      "prerequisites": ["computer-networks", "computer-architecture-os"],
+      "estimated_time_minutes": 50,
+      "subtopics": ["arquitecturas-distribuidas", "comunicacion-procesos", "sincronizacion", "tolerancia-fallos", "cloud-computing"]
+    }
+  ]
+}

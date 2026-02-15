@@ -1,0 +1,15 @@
+{
+  "status": "bootstrap-default",
+  "learning_style": "examples",
+  "pace": "medium",
+  "primary_motivator": "progress-tracking",
+  "stress_baseline": "low",
+  "error_tolerance": "medium",
+  "preferred_feedback": "empathetic",
+  "strategies": {
+    "frustration": "Switch to real-world analogy, reduce to one subtopic",
+    "streak_broken": "Remind past progress, focus on next small win",
+    "high_stress": "Suggest short break, temporarily reduce difficulty"
+  },
+  "last_updated": ""
+}
