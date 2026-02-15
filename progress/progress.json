@@ -1,12 +1,151 @@
 {
-  "user_name": "",
-  "assessment_date": "",
-  "current_date": "",
+  "user_name": "Cortez",
+  "assessment_date": "2026-02-15",
+  "current_date": "2026-02-15",
   "study_streak": 0,
   "last_study_date": "",
   "stress_level": "bajo",
   "total_sessions": 0,
-  "topics": {},
-  "roadmap_order": [],
-  "notes": []
+  "topics": {
+    "discrete-mathematics": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 1
+    },
+    "computational-logic": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 1
+    },
+    "algorithmics-analysis-design": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 1
+    },
+    "algorithmics-analysis-design-2": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 1
+    },
+    "data-structures": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 1
+    },
+    "programming-languages": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 3
+    },
+    "computer-architecture-os": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 2
+    },
+    "computer-networks": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 2
+    },
+    "compilers": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 2
+    },
+    "databases": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 3
+    },
+    "software-engineering": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 3
+    },
+    "information-security": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 3
+    },
+    "artificial-intelligence": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 4
+    },
+    "data-mining": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 4
+    },
+    "distributed-computing": {
+      "score": 0,
+      "attempts": 0,
+      "last_quiz_date": "",
+      "status": "sin_iniciar",
+      "times_failed_consecutively": 0,
+      "egel_area": 4
+    }
+  },
+  "roadmap_order": [
+    "discrete-mathematics",
+    "programming-languages",
+    "computer-architecture-os",
+    "computational-logic",
+    "algorithmics-analysis-design",
+    "computer-networks",
+    "databases",
+    "software-engineering",
+    "data-structures",
+    "information-security",
+    "algorithmics-analysis-design-2",
+    "compilers",
+    "artificial-intelligence",
+    "distributed-computing",
+    "data-mining"
+  ],
+  "notes": [
+    "2026-02-15: Perfil inicial generado. Áreas prioritarias: Área 2 (Software de Base) y Área 4 (Cómputo Inteligente). Roadmap ordenado respetando prerequisitos y confianza autoevaluada."
+  ]
 }

@@ -1,15 +1,35 @@
 {
-  "status": "bootstrap-default",
-  "learning_style": "examples",
-  "pace": "medium",
-  "primary_motivator": "progress-tracking",
-  "stress_baseline": "low",
-  "error_tolerance": "medium",
-  "preferred_feedback": "empathetic",
-  "strategies": {
-    "frustration": "Switch to real-world analogy, reduce to one subtopic",
-    "streak_broken": "Remind past progress, focus on next small win",
-    "high_stress": "Suggest short break, temporarily reduce difficulty"
+  "status": "active",
+  "user_name": "Cortez",
+  "learning_style": "kinesthetic",
+  "pace": "fast",
+  "primary_motivator": "intrinsic-understanding",
+  "stress_baseline": "medium",
+  "error_tolerance": "high",
+  "preferred_feedback": "detailed-analytical",
+  "focus_duration_minutes": 15,
+  "daily_study_hours": 1,
+  "egel_attempts": 0,
+  "area_confidence": {
+    "1_algoritmia": 3,
+    "2_software_base": 2,
+    "3_software_aplicacion": 3,
+    "4_computo_inteligente": 1
   },
-  "last_updated": ""
+  "strategies": {
+    "frustration": "Cambiar a analogías del mundo real + mostrar diferentes enfoques prácticos para que puedas probar alternativas",
+    "streak_broken": "Recordar tu motivación intrínseca (entender cómo funcionan las cosas) + enfocarte en comprender un concepto pequeño",
+    "high_stress": "Sesión ultra-corta de 10 minutos con un ejercicio práctico simple + celebrar el intento sin importar el resultado"
+  },
+  "learning_preferences": {
+    "session_length_minutes": 20,
+    "prefers_breadth_first": true,
+    "comfortable_with_multiple_choice": true,
+    "main_concern": "depth-required",
+    "visual_preference": "videos",
+    "explanation_style": "analogies",
+    "problem_solving_approach": "try-different-approaches",
+    "failure_response": "motivated-to-retry"
+  },
+  "last_updated": "2026-02-15"
 }
