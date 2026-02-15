@@ -27,6 +27,7 @@ One-time calibration session. Ask ~25 questions one at a time (dynamically addin
 | **O7** | Dynamic deepening: if user reveals a weakness or low confidence in an area, add 2-3 follow-up questions to understand the gap better |
 | **O8** | NEVER ask for confirmation before writing files — all writes are automatic and mandatory |
 | **O9** | Always present options as a numbered list (1. 2. 3. …) — never inline with slashes or commas |
+| **O10** | NEVER leave a question fully open-ended — every non-scale question MUST offer a numbered list of suggested answers AND include a final escape option (e.g., "5. Otra — cuéntame" or "5. Algo diferente — escribe lo tuyo"). Pure Likert scales (1–5 numeric ratings) are exempt because the scale itself is the complete answer space. This rule applies to ALL scenario, context, and follow-up questions. |
 
 ## Flow
 
@@ -43,25 +44,33 @@ Greet the user warmly in Spanish. Ask for their name. Explain:
 - "Vamos a hacer una calibración de ~25 preguntas para personalizar tu experiencia de aprendizaje"
 - "Una pregunta a la vez, sin prisa — esto toma unos 20 minutos"
 
-### 3. Interview — One Question Per Message [O2, O9]
+### 3. Interview — One Question Per Message [O2, O9, O10]
 
 Ask questions in the 5 blocks below. **One question per message, wait for response before next.**
 
-**IMPORTANT [O9]:** Every question that offers choices MUST present them as a numbered list. Example:
+**IMPORTANT [O9]:** Every question MUST present options as a numbered list. Never inline (e.g. "a / b / c").
+
+**IMPORTANT [O10]:** EVERY question — including scale questions, scenario questions, and follow-ups — MUST end with a numbered escape option like "5. Otra — cuéntame" or "4. Algo diferente — escribe lo tuyo". There are NO fully open-ended questions in this interview. If the user picks "Otra", ask them to elaborate (that follow-up can also offer common options + escape).
+
+Example format:
 > ¿Cuánto tiempo puedes concentrarte antes de necesitar un descanso?
 > 1. 15 minutos
 > 2. 30 minutos
 > 3. 45 minutos
 > 4. 1 hora o más
-
-Never list options inline (e.g. "a / b / c" or "a, b, c"). Always use a numbered list.
+> 5. Algo diferente — cuéntame
 
 ---
 
 #### Block A: Contexto y Autoeficacia (7 preguntas) [→ self_efficacy, study_habits]
 
-**A1 (abierta):** "¿Has presentado el EGEL antes? Si es así, ¿cómo te fue?"
-- Map: `study_habits.egel_attempts` (0 = no, 1+ = yes with count); note initial anxiety signal
+**A1:** "¿Has presentado el EGEL antes?"
+1. No, será mi primera vez
+2. Sí, una vez — no lo pasé
+3. Sí, una vez — lo pasé pero quiero mejorar mi nivel
+4. Sí, más de una vez — sigo intentándolo
+5. Algo diferente — cuéntame
+- Map: `study_habits.egel_attempts` (1→0, 2-4→1+); note initial anxiety signal from options 2 and 4
 
 **A2 (escala):** "En general, ¿qué tan capaz te sientes de aprender y dominar temas nuevos de Ciencias Computacionales cuando te lo propones?"
 1. 1 — Muy pocas veces lo logro
@@ -88,13 +97,35 @@ Never list options inline (e.g. "a / b / c" or "a, b, c"). Always use a numbered
 **A6:** "¿Y con el Área 4 — Cómputo Inteligente (IA, minería de datos, cómputo distribuido)?" (same 1–5 scale)
 - Map: `self_efficacy.by_area.4_computo_inteligente`
 
-**A7 (abierta):** "¿Has estudiado alguna de estas áreas de forma formal (clases, cursos) o es todo autodidacta?"
-- Map: `study_habits.prior_formal_study`
+**A7:** "¿Cómo has aprendido los temas de Ciencias Computacionales hasta ahora?"
+1. Principalmente en la universidad — clases formales
+2. Mitad universidad, mitad autodidacta (cursos online, libros, proyectos)
+3. Casi todo autodidacta — cursos online, YouTube, libros
+4. Aprendizaje en el trabajo o práctica profesional
+5. Algo diferente — cuéntame
+- Map: `study_habits.prior_formal_study` (1 or 2 → `true`; 3 or 4 → depends on context)
 
-**Dynamic deepening [O7]:** If any area score ≤ 2, add 2-3 follow-ups:
-- "¿Qué temas específicos de [área] te resultan más difíciles?"
-- "¿Es la parte teórica o la práctica lo que más te cuesta?"
-- "¿Hay algún subtema dentro de [área] que sí domines?"
+**Dynamic deepening [O7, O10]:** If any area score ≤ 2, add 2-3 follow-ups (always with numbered options + escape):
+
+Follow-up 1: "¿Qué parte de [área] te resulta más difícil?"
+1. Los conceptos teóricos y definiciones formales
+2. Resolver ejercicios o problemas prácticos
+3. Recordar los detalles cuando los necesito
+4. Conectar los temas entre sí
+5. Algo diferente — cuéntame
+
+Follow-up 2: "¿Has tenido exposición formal a [área] o es algo que casi no has visto?"
+1. Tuve una materia en la universidad pero no recuerdo mucho
+2. Lo vi de forma autodidacta pero sin profundidad
+3. Casi no lo he estudiado — es terreno nuevo para mí
+4. Lo conozco de la práctica profesional pero no formalmente
+5. Algo diferente — cuéntame
+
+Follow-up 3 (optional): "¿Hay algún subtema dentro de [área] que sí domines o te genere más confianza?"
+1. Sí — [el tutor debe dejar que el usuario escriba el subtema, o deducirlo del contexto]
+2. No realmente, todo el área se me complica igual
+3. No estoy seguro/a de cuáles son los subtemas
+4. Algo diferente — cuéntame
 
 ---
 
@@ -105,14 +136,16 @@ Never list options inline (e.g. "a / b / c" or "a, b, c"). Always use a numbered
 2. Retrocedo al último punto que entendí y empiezo de nuevo
 3. Cambio de tema o tomo un descanso
 4. Busco una explicación diferente (video, ejemplo, etc.)
-- Map: `metacognition.self_monitoring` (option 2 or 4 → high: 0.7–0.9; 1 or 3 → low: 0.2–0.4)
+5. Algo diferente — cuéntame
+- Map: `metacognition.self_monitoring` (option 2 or 4 → high: 0.7–0.9; 1 or 3 → low: 0.2–0.4; 5 → interpret from free text)
 
 **B2 (escenario):** "Para preparar un examen, ¿cuál de estas estrategias usas más?"
 1. Releer mis apuntes varias veces
 2. Hacerme preguntas o resolverme tests
 3. Resumir con mis propias palabras
 4. Repasar lo que ya sé y saltar lo que no
-- Map: `study_habits.retrieval_practice_awareness` (option 2 or 3 → high; 1 or 4 → low)
+5. Algo diferente — cuéntame
+- Map: `study_habits.retrieval_practice_awareness` (option 2 or 3 → high; 1 or 4 → low; 5 → interpret from free text)
 
 **B3 (escala):** "¿Qué tan bien cumples tus propios planes de estudio? (ej. 'hoy voy a estudiar 1 hora de algoritmos')"
 1. 1 — Casi nunca los cumplo
@@ -127,7 +160,8 @@ Never list options inline (e.g. "a / b / c" or "a, b, c"). Always use a numbered
 2. En 2–3 días
 3. La próxima semana
 4. Cuando aparezca en el roadmap de nuevo
-- Map: `study_habits.spacing_awareness` (option 2 or 3 → high: 0.7–0.9; 1 or 4 → low: 0.2–0.4)
+5. No lo había pensado — algo diferente — cuéntame
+- Map: `study_habits.spacing_awareness` (option 2 or 3 → high: 0.7–0.9; 1 or 4 → low: 0.2–0.4; 5 → interpret from free text)
 
 **B5 (escala):** "Cuando algo no te está funcionando en el estudio, ¿qué tan seguido cambias de estrategia?"
 1. 1 — Casi nunca, sigo con lo mismo
@@ -141,39 +175,45 @@ Never list options inline (e.g. "a / b / c" or "a, b, c"). Always use a numbered
 
 #### Block C: Motivación y Mentalidad (5 preguntas) [→ motivation, mindset]
 
-**C1 (ranking):** "De las siguientes necesidades, ¿cuál es más importante para ti en tu proceso de aprendizaje? Ordénalas del 1 (más importante) al 3."
+**C1 (ranking):** "De las siguientes necesidades, ¿cuál es más importante para ti en tu proceso de aprendizaje? Elige la que más resuene contigo."
 1. Sentir que tengo control sobre cómo y cuándo estudio (autonomía)
 2. Ver que estoy mejorando y dominando los temas (competencia)
 3. Aprender junto a alguien o sentir apoyo (conexión)
-- Map: rank order → set highest ranked need to 0.8, second to 0.5, third to 0.3 in `motivation.autonomy_need / competence_need / relatedness_need`
+4. Me identifico con las tres por igual
+5. Algo diferente — cuéntame
+- Map: 1 → `autonomy_need: 0.8, competence_need: 0.4, relatedness_need: 0.3`; 2 → `competence_need: 0.8, autonomy_need: 0.4, relatedness_need: 0.3`; 3 → `relatedness_need: 0.8, autonomy_need: 0.4, competence_need: 0.4`; 4 → all 0.5; 5 → interpret from free text
 
 **C2 (escenario):** "Sacas 72% en un quiz. ¿Cuál es tu primera reacción?"
 1. '¡Bien! ¿Qué necesito aprender para llegar al 85%?'
 2. '¿Cómo me fue comparado con lo que se espera?'
 3. 'Pasé, suficiente por ahora'
 4. 'Casi me va mal, mejor no intentarlo de nuevo pronto'
-- Map: 1 → `motivation.orientation: "mastery"`; 2 → `"performance_approach"`; 3 → `"performance_avoidance"`; 4 → `"performance_avoidance"`
+5. Algo diferente — cuéntame
+- Map: 1 → `motivation.orientation: "mastery"`; 2 → `"performance_approach"`; 3 → `"performance_avoidance"`; 4 → `"performance_avoidance"`; 5 → interpret from free text
 
-**C3 (abierta):** "¿Por qué quieres aprobar el EGEL? ¿Qué significa para ti lograrlo?"
-- Map to `motivation.regulation_type`:
-  - External pressure ("me exigen", "necesito el título") → `"external"`
-  - Shame/obligation ("debería haberlo hecho") → `"introjected"`
-  - Instrumental goal ("para conseguir trabajo") → `"identified"`
-  - Genuine interest ("quiero demostrarme que puedo") → `"intrinsic"`
+**C3:** "¿Por qué quieres aprobar el EGEL? ¿Con cuál de estas opciones te identificas más?"
+1. Lo necesito para titularme — es un requisito que tengo que cumplir
+2. Quiero mejorar mis oportunidades laborales o profesionales
+3. Quiero demostrarme a mí mismo/a que puedo hacerlo
+4. Me lo están pidiendo (familia, universidad, trabajo) y hay presión externa
+5. Algo diferente — cuéntame
+- Map to `motivation.regulation_type`: 1 → `"introjected"`; 2 → `"identified"`; 3 → `"intrinsic"`; 4 → `"external"`
 
 **C4 (escenario):** "Un amigo te dice: 'La inteligencia en programación es innata — o eres bueno o no.' ¿Qué piensas?"
 1. Tiene razón, hay personas con talento natural
 2. Tiene algo de razón pero el esfuerzo también importa
 3. No estoy de acuerdo — cualquiera puede mejorar con práctica
 4. No lo sé, a veces me pregunto lo mismo sobre mí
-- Map: `mindset.growth_belief` (3 → 0.9; 2 → 0.6; 1 or 4 → 0.3)
+5. Algo diferente — cuéntame
+- Map: `mindset.growth_belief` (3 → 0.9; 2 → 0.6; 1 or 4 → 0.3; 5 → interpret from free text)
 
 **C5 (escenario):** "Llevas 3 sesiones seguidas fallando el mismo tema. ¿Qué haces?"
 1. Me frustro y lo evito por un tiempo
 2. Sigo intentándolo exactamente igual
 3. Busco una explicación completamente diferente
 4. Me digo que no sirvo para eso y paso a otro tema
-- Map: `mindset.failure_response` (3 → `"persistence"`; 1 → `"avoidance"`; 4 → `"helplessness"`; 2 → `"persistence"`)
+5. Algo diferente — cuéntame
+- Map: `mindset.failure_response` (3 → `"persistence"`; 1 → `"avoidance"`; 4 → `"helplessness"`; 2 → `"persistence"`; 5 → interpret from free text)
 - Map: `mindset.attribution_style` (3 → `"effort"`; 4 → `"ability"`; 1 or 2 → `"effort"`)
 
 ---
@@ -193,46 +233,70 @@ Never list options inline (e.g. "a / b / c" or "a, b, c"). Always use a numbered
 2. En unas horas — necesito un descanso pero vuelvo
 3. Al día siguiente — me afecta más de lo que quisiera
 4. Me cuesta varios días sacudírmelo
-- Map: `anxiety_profile.failure_recovery_speed` (1 → `"fast"`; 2 → `"moderate"`; 3 or 4 → `"slow"`)
+5. Algo diferente — cuéntame
+- Map: `anxiety_profile.failure_recovery_speed` (1 → `"fast"`; 2 → `"moderate"`; 3 or 4 → `"slow"`; 5 → interpret from free text)
 
 **D3 (escenario):** "Acabas de responder una pregunta incorrectamente. ¿Qué tipo de retroalimentación prefieres?"
-1. Directo al punto: '¿Incorrecto. La respuesta es X porque Y.'
+1. Directo al punto: 'Incorrecto. La respuesta es X porque Y.'
 2. Primero reconoce lo que hice bien, luego corrige
 3. Dame una pista para que yo llegue a la respuesta correcta
 4. Explícame detalladamente el razonamiento correcto
-- Map: 1 → `directness: 0.8, emotional_support: 0.2, hint_preference: 0.2`; 2 → `directness: 0.4, emotional_support: 0.8`; 3 → `hint_preference: 0.8, directness: 0.4`; 4 → `detail_level: 0.8`
+5. Algo diferente — cuéntame
+- Map: 1 → `directness: 0.8, emotional_support: 0.2, hint_preference: 0.2`; 2 → `directness: 0.4, emotional_support: 0.8`; 3 → `hint_preference: 0.8, directness: 0.4`; 4 → `detail_level: 0.8`; 5 → interpret from free text
 
-**D4 (abierta):** "¿Hay algo específico del EGEL o de los temas que te genere más ansiedad o que te bloquee? Puede ser un tema, el tiempo límite, el formato..."
-- Map: `anxiety_profile.anxiety_triggers` (extract keywords from free text)
+**D4:** "¿Hay algo específico del EGEL o de los temas que te genere más ansiedad o te bloquee? Selecciona todo lo que aplique (puedes escribir varios números):"
+1. Un tema concreto (algoritmos, redes, bases de datos, etc.)
+2. El tiempo límite del examen
+3. El formato de opción múltiple — siento que sé el tema pero fallo en el examen
+4. No saber si estoy suficientemente preparado/a
+5. La presión de presentarlo frente a otros o las consecuencias de no pasar
+6. Nada en especial — me siento tranquilo/a al respecto
+7. Algo diferente — cuéntame
+- Map: `anxiety_profile.anxiety_triggers` (collect selected option labels as array; option 7 → append free text)
 
-**Dynamic deepening [O7]:** If D1 ≥ 4:
-- "¿Cuándo sientes más ansiedad — antes del examen, durante, o cuando ves los resultados?"
-- "¿Has tenido estrategias que te hayan ayudado a manejar esa ansiedad en exámenes antes?"
+**Dynamic deepening [O7, O10]:** If D1 ≥ 4, add up to 2 follow-ups (always with numbered options + escape):
+
+Follow-up 1: "¿En qué momento sientes más ansiedad relacionada con el EGEL?"
+1. Antes — solo de pensar en que tengo que presentarlo
+2. Durante el estudio — cuando siento que no avanzo
+3. Al momento de contestar preguntas, aunque haya estudiado
+4. Cuando veo los resultados — el miedo es a fallar en ese momento
+5. Algo diferente — cuéntame
+
+Follow-up 2: "¿Has tenido alguna estrategia que te haya ayudado con la ansiedad en exámenes antes?"
+1. Sí — técnicas de respiración o relajación
+2. Sí — estudiar mucho para sentirme seguro/a
+3. Sí — hablarme a mí mismo/a con autocompasión
+4. No he encontrado algo que realmente funcione
+5. Algo diferente — cuéntame
 
 ---
 
 #### Block E: Perfil Cognitivo y Logística (4 preguntas) [→ cognitive_profile, scaffolding]
 
-**E1 (escala):** "¿Cuánto tiempo puedes concentrarte activamente en un tema antes de que tu mente empiece a divagar?"
+**E1:** "¿Cuánto tiempo puedes concentrarte activamente en un tema antes de que tu mente empiece a divagar?"
 1. 10–15 minutos
 2. 20–30 minutos
 3. 30–45 minutos
 4. 45+ minutos
-- Map: `cognitive_profile.focus_duration_minutes` (1→15, 2→25, 3→40, 4→50)
+5. Depende mucho del día — algo diferente — cuéntame
+- Map: `cognitive_profile.focus_duration_minutes` (1→15, 2→25, 3→40, 4→50; 5 → use 25 as default and note variability)
 
-**E2 (escala):** "¿Cuánto tiempo al día puedes dedicar a estudiar para el EGEL?"
+**E2:** "¿Cuánto tiempo al día puedes dedicar a estudiar para el EGEL?"
 1. 30 minutos
 2. 1 hora
 3. 1.5–2 horas
 4. 3+ horas
-- Map: `cognitive_profile.daily_available_minutes` (1→30, 2→60, 3→105, 4→180)
+5. Varía mucho según el día — algo diferente — cuéntame
+- Map: `cognitive_profile.daily_available_minutes` (1→30, 2→60, 3→105, 4→180; 5 → use 60 as default and note variability)
 
 **E3 (escenario):** "Estás aprendiendo un algoritmo de ordenamiento que nunca has visto. ¿Qué preferirías que hiciera el tutor?"
 1. Mostrarme un ejemplo completo resuelto paso a paso, y luego yo intento uno similar
 2. Hacerme preguntas que me guíen a descubrirlo por mi cuenta
 3. Darme el concepto y dejarme explorar con mis propias preguntas
 4. Explicarme la teoría completa primero, con definiciones formales
-- Map: zpd_level: 1 → `"modeled"`, 2 → `"guided"`, 3 → `"independent"`, 4 → `"structured"`
+5. Algo diferente — cuéntame
+- Map: zpd_level: 1 → `"modeled"`, 2 → `"guided"`, 3 → `"independent"`, 4 → `"structured"`; 5 → interpret from free text
 - Map: `cognitive_profile.load_tolerance`: 1 or 4 → 0.3 (prefers structure), 2 → 0.5, 3 → 0.7 (comfortable with ambiguity)
 
 **E4 (escenario):** "Después de una sesión difícil en la que te costó trabajo pero al final entendiste, ¿qué prefieres que haga el tutor?"
@@ -240,7 +304,8 @@ Never list options inline (e.g. "a / b / c" or "a, b, c"). Always use a numbered
 2. Una confirmación breve está bien, no necesito mucho
 3. Dame un resumen de lo que aprendí, eso me motiva más
 4. Pasemos rápido al siguiente tema, el progreso es lo que importa
-- Map: `celebration_preference` (1→0.9, 2→0.3, 3→0.5, 4→0.2)
+5. Algo diferente — cuéntame
+- Map: `celebration_preference` (1→0.9, 2→0.3, 3→0.5, 4→0.2; 5 → interpret from free text)
 - Map: `explanation_depth` (3 → `"detailed"`, 4 → `"minimal"`, else → `"moderate"`)
 
 ---
