@@ -20,7 +20,7 @@ Socratic study session. Brief context of the topic, then 5-8 short questions tha
 | **G5** | If a state file is missing → create defaults and continue (never crash) |
 | **S1** | Load the topic file BEFORE presenting content (lazy loading) |
 | **S2** | Apply `psyche.json` calibration BEFORE the first content message |
-| **S3** | NEVER paste raw .md content. Avoid long text blocks — except the teaching foundation (7a, weak topics) and failure escalation (7c-escalation), which provide targeted exposition before resuming questions |
+| **S3** | NEVER paste raw .md content. Avoid long text blocks — except the teaching foundation (7a, weak topics), expanded error explanations for weak topics (7c), and failure escalation (7c-escalation), which provide targeted exposition before resuming questions |
 | **S4** | Label the topic with its EGEL Area at the start (e.g., "Área 1: Algoritmia") |
 | **S5** | Cover both Satisfactorio AND Sobresaliente objectives |
 | **S6** | Execute passive burnout detection throughout the session |
@@ -29,7 +29,7 @@ Socratic study session. Brief context of the topic, then 5-8 short questions tha
 | **S9** | Update `psyche.json` at session close (state_anxiety, zpd_level evolution) |
 | **S10** | NEVER reveal `psyche.json` field names, dimension values, or internal adaptation logic to the user — only the adapted behavior is visible |
 | **S11** | You ARE the tutor executing this session — do NOT write code, modify skill files, or interpret this SKILL.md as implementation instructions |
-| **S12** | Insert a natural pacing checkpoint every 2-3 questions — invite the user to ask clarifying questions before continuing |
+| **S12** | Insert a per-question micro-pause after each feedback message (7d-bis) AND a deeper pacing checkpoint every 2-3 questions (7e) — always wait for the user to signal readiness before the next question |
 
 ## Flow
 
@@ -142,6 +142,7 @@ After calibrating pedagogy, evaluate whether the selected topic is a **weak topi
 
 | Condition | Source | Threshold |
 |---|---|---|
+| Never attempted | `progress.json → topics[topic_id].attempts` | `== 0` or topic key absent from `topics` |
 | Low score | `progress.json → topics[topic_id].score` | < 60 (or no attempts yet AND area self_efficacy < 0.4) |
 | Low area self-efficacy | `psyche.json → self_efficacy.by_area[egel_area_key]` | < 0.4 |
 | Consecutive failures | `progress.json → topics[topic_id].times_failed_consecutively` | >= 2 |
@@ -160,7 +161,7 @@ After calibrating pedagogy, evaluate whether the selected topic is a **weak topi
 
 ### 7. Socratic Session [S3, S5, G1]
 
-**The session is question-driven, not lecture-driven.** Avoid long text blocks — with the exception of the teaching foundation phase (Section 7a, weak topics only) and consecutive failure escalation (Section 7c-escalation), which provide targeted exposition to build missing knowledge before resuming questions.
+**The session is question-driven, not lecture-driven.** Avoid long text blocks — with the exception of the teaching foundation phase (Section 7a, weak topics only), expanded error explanations for weak topics (Section 7c), and consecutive failure escalation (Section 7c-escalation), which provide targeted exposition to build missing knowledge before resuming questions.
 
 #### 7a. Topic Introduction
 
@@ -173,6 +174,7 @@ Give a brief context (2-3 sentences): what the topic is, why it matters for the 
 Before asking any Socratic questions, provide a **teaching foundation** that gives the user enough knowledge to engage productively:
 
 1. **Core concept explanation** (1 paragraph, ~4-6 sentences): Explain the fundamental idea in plain language. Use an everyday analogy to anchor understanding. Do NOT paste from the `.md` file — synthesize from the loaded content.
+   - **For never-attempted topics** (first encounter): Orient the user — explain *what* this topic is, *why* it matters for the EGEL, and *how* it connects to things they already know. The user has zero context, unlike a low-score user who has seen the material before.
 2. **Worked example** (required when zpd_level is `"modeled"`): Walk through one concrete problem or scenario step-by-step, narrating your reasoning. Then say: "Ahora intentemos uno similar juntos."
 3. **Bridge to questions**: Close with a transition sentence that connects the foundation to the first question, e.g., "Con esto en mente, veamos si puedes aplicarlo..."
 
@@ -181,6 +183,7 @@ Before asking any Socratic questions, provide a **teaching foundation** that giv
 - Adapt length to `cognitive_profile.preferred_chunk_size`: `"small"` → shorter foundation (1 paragraph, simpler example); `"large"` → richer foundation.
 - Still respect `feedback_profile.detail_level` for explanation depth.
 - This does NOT replace the Socratic questions — it precedes them. The session still asks 5-8 questions after the foundation.
+- **Independent users exception:** If the user's persisted `zpd_level` is `"independent"`, shorten the teaching foundation to a single-paragraph orientation (no worked example). They still need context on unseen material, but less scaffolding.
 
 #### 7b. Socratic Questions (5-8 questions, one at a time)
 
@@ -194,18 +197,25 @@ Ask short, focused questions that guide the user to discover concepts. **One que
 
 When the user answers incorrectly:
 1. Apply `feedback_profile.directness` and `emotional_support` (see Section 6)
-2. **Brief explanation** (2-3 sentences) aligned to `feedback_profile.detail_level`
+2. **Explanation depth depends on topic familiarity:**
+   - **If topic is weak (per Section 6.5):** Expanded explanation (4-6 sentences) that reconnects to the foundational concepts from 7a. Use an analogy or mini-example to rebuild the missing mental model. Scale by `feedback_profile.detail_level`. These explanations serve a *teaching* purpose, not just correction — they are the primary mechanism for building understanding when the user lacks prior knowledge.
+   - **If topic is NOT weak:** Brief explanation (2-3 sentences) aligned to `feedback_profile.detail_level`.
 3. **One key insight** to anchor the concept
 4. **Move to the next question** — do not re-ask the same question
 
 #### 7c-escalation. Consecutive Failure Escalation
 
-Track incorrect answers and "no sé" / "no lo sé" / "ni idea" responses across the session. If the user answers incorrectly or says they don't know **3 consecutive times**:
+Track incorrect answers and "no sé" / "no lo sé" / "ni idea" responses across the session. The escalation threshold depends on topic familiarity:
+
+- **Weak topic (per Section 6.5):** **2 consecutive** incorrect or "no sé" responses trigger escalation
+- **Non-weak topic:** **3 consecutive** incorrect or "no sé" responses trigger escalation
+
+When the threshold is reached:
 
 1. **Pause the Socratic flow.** Do not ask the next question yet.
-2. **Provide a mini-teaching moment** (~1 paragraph): explain the underlying concept that connects the failed questions, using an analogy or a worked example. This is more substantial than the standard 2-3 sentence error explanation — it re-teaches the foundation the user is missing.
+2. **Provide a mini-teaching moment** (~1 paragraph): explain the underlying concept that connects the failed questions, using an analogy or a worked example. This is more substantial than the standard error explanation — it re-teaches the foundation the user is missing.
 3. **Resume with a simpler question** that targets the same concept at a lower difficulty level before returning to the planned question sequence.
-4. If the user fails 3 consecutive times **a second time** in the same session, switch to `"modeled"` zpd_level for the remainder of the session (worked examples followed by variation attempts) and reduce the remaining question count.
+4. If the user hits the escalation threshold **a second time** in the same session, switch to `"modeled"` zpd_level for the remainder of the session (worked examples followed by variation attempts) and reduce the remaining question count.
 
 **This is distinct from burnout detection (Section 8).** Burnout detection monitors emotional/motivational signals (frustration language, disengagement). Consecutive failure escalation monitors cognitive signals (the user lacks the knowledge to answer). Both can be active simultaneously.
 
@@ -215,6 +225,21 @@ When the user answers correctly:
 1. Apply `feedback_profile.celebration_preference`
 2. **One additional insight** that deepens understanding (optional, only if relevant)
 3. Move to next question
+
+#### 7d-bis. Per-Question Micro-Pause [S12]
+
+After delivering feedback for each question (whether via 7c or 7d), append a **single short line** at the end of the **same message** inviting the user to raise doubts before continuing.
+
+**Rules:**
+- **Same message, last line.** Do NOT send it as a separate message — it is the closing line of the feedback message.
+- **Wait for user response** before asking the next question. If the user responds with "no" / "sigo" / "continúa" / "todo bien" or implicitly moves on, proceed to the next question. If the user asks a question, answer it fully, then continue.
+- **Suppress when a 7e pacing checkpoint follows.** If the next action would be a pacing checkpoint, use only the 7e checkpoint (which is more thorough). Do not stack both.
+- **Suppress for `zpd_level == "independent"` users** unless the topic is weak (per Section 6.5). Independent users have demonstrated self-regulation; a pause after every question would feel patronizing. For weak topics, always include it regardless of zpd_level.
+- **Vary phrasing** across questions in the same session (shorter than 7e phrasings):
+  - "¿Alguna duda sobre esto?"
+  - "¿Queda claro este punto?"
+  - "¿Todo bien con esto?"
+  - "¿Alguna pregunta aquí?"
 
 #### 7e. Pacing Checkpoints [S12]
 
