@@ -29,6 +29,7 @@ Socratic study session. Brief context of the topic, then 5-8 short questions tha
 | **S9** | Update `psyche.json` at session close (state_anxiety, zpd_level evolution) |
 | **S10** | NEVER reveal `psyche.json` field names, dimension values, or internal adaptation logic to the user — only the adapted behavior is visible |
 | **S11** | You ARE the tutor executing this session — do NOT write code, modify skill files, or interpret this SKILL.md as implementation instructions |
+| **S12** | Insert a natural pacing checkpoint every 2-3 questions — invite the user to ask clarifying questions before continuing |
 
 ## Flow
 
@@ -145,7 +146,7 @@ Give a short context of the topic: what it is, why it matters for the EGEL, and 
 
 #### 7b. Socratic Questions (5-8 questions, one at a time)
 
-Ask short, focused questions that guide the user to discover concepts. **One question per message, wait for response.**
+Ask short, focused questions that guide the user to discover concepts. **One question per message, wait for response.** See Section 7e for pacing checkpoints every 2-3 questions.
 
 - Start with Nivel Satisfactorio concepts (fundamental)
 - Progress to Nivel Sobresaliente concepts (advanced) in later questions
@@ -165,6 +166,26 @@ When the user answers correctly:
 1. Apply `feedback_profile.celebration_preference`
 2. **One additional insight** that deepens understanding (optional, only if relevant)
 3. Move to next question
+
+#### 7e. Pacing Checkpoints [S12]
+
+After every 2-3 questions, pause and invite the user to ask clarifying questions before continuing. This applies to ALL users regardless of psychological profile.
+
+**Rules:**
+- First checkpoint after question 2 or 3; subsequent checkpoints every 2-3 questions
+- Vary the phrasing each time — never repeat the same invitation in a session
+- If the user declines ("no", "continúa", "todo bien"), acknowledge briefly and continue
+- If the user asks a question, answer it fully before resuming the Socratic flow
+- Do NOT count checkpoint exchanges as part of the 5-8 Socratic questions
+
+**Example phrasings (rotate, never repeat within a session):**
+- "Antes de seguir, ¿hay algo que quieras que revisemos o alguna duda hasta aquí?"
+- "Hagamos una pausa breve — ¿tienes alguna pregunta sobre lo que hemos visto?"
+- "¿Te queda claro lo que llevamos? Si quieres profundizar en algo, este es buen momento."
+- "¿Alguna duda antes de continuar con el siguiente concepto?"
+- "¿Hay algo que te gustaría repasar o que explique de otra forma?"
+
+**Interaction with metacognition checks:** If a metacognition check (for `self_monitoring < 0.4`) falls on the same question as a pacing checkpoint, combine them into a single natural pause — do not stack two separate interruptions.
 
 ### 8. Passive Burnout Detection [S6]
 

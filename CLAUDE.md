@@ -29,7 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    - `sessions.jsonl`: Timestamped session history with strategies_used
 
 3. **Orchestration Layer** (Claude Code Skills)
-   - 6 core skills: `/onboard`, `/study`, `/quiz`, `/status`, `/roadmap`, `/burnout-check`
+   - 6 core skills: `/onboard`, `/study`, `/quiz`, `/dashboard`, `/roadmap`, `/burnout-check`
    - Each skill is stateless and file-driven
    - No persistent memory between invocations
 
@@ -41,7 +41,7 @@ adaptive-egel/
 │   ├── onboard/          # Skill: Initial psychological + knowledge assessment
 │   ├── study/            # Skill: Daily study session with adaptive content
 │   ├── quiz/             # Skill: Dynamic assessment + roadmap update
-│   ├── status/           # Skill: Progress dashboard
+│   ├── dashboard/        # Skill: Progress dashboard
 │   └── roadmap/          # Skill: Explain topic prioritization
 ├── knowledge_base/
 │   ├── index_map.json    # Topic metadata index
@@ -251,7 +251,7 @@ Append-only JSONL (one JSON object per line). Each entry:
 
 **Token Budget:** ~5-15k per quiz, ~$0.02-0.05 cost
 
-### `/status`
+### `/dashboard`
 
 **Purpose:** Progress dashboard showing streaks, mastered topics, weak areas, next recommendation.
 
@@ -383,10 +383,10 @@ Never overwrite — always use weighted average to preserve accumulated progress
 ## Development Workflow
 
 1. **Setup:** Review `first-plan.md` and `first-prd.md` for full context
-2. **Implement skills in order:** `/onboard` → `/study` → `/quiz` → `/status` → `/roadmap`
+2. **Implement skills in order:** `/onboard` → `/study` → `/quiz` → `/dashboard` → `/roadmap`
 3. **Before implementing:** Ensure directories exist under `.claude/skills/`
 4. **For each skill:** Create `SKILL.md` with skill definition and implementation notes
-5. **Test:** Run full flow: `/onboard` → `/study` → `/quiz` → `/status`
+5. **Test:** Run full flow: `/onboard` → `/study` → `/quiz` → `/dashboard`
 6. **Monitor:** Check token usage and user engagement metrics
 
 ---

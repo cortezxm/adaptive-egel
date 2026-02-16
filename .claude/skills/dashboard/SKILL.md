@@ -1,9 +1,9 @@
 ---
-name: status
-description: "Use this skill when the user runs /status, asks to see their progress, wants to check their streak, or asks how they're doing on their study journey."
+name: dashboard
+description: "Use this skill when the user runs /dashboard, asks to see their progress, wants to check their streak, or asks how they're doing on their study journey."
 ---
 
-# /status — Progress Dashboard
+# /dashboard — Progress Dashboard
 
 ## Purpose
 
@@ -132,7 +132,7 @@ Tailor the closing message based on overall profile:
 Append one entry to `progress/sessions.jsonl`:
 
 ```json
-{"date":"YYYY-MM-DD","skill":"/status","topic":null,"details":"dashboard-viewed","metrics":{"streak":<N>,"topics_mastered":<N>,"topics_progressing":<N>,"topics_weak":<N>,"stress":"<progress.stress_level>"}}
+{"date":"YYYY-MM-DD","skill":"/dashboard","topic":null,"details":"dashboard-viewed","metrics":{"streak":<N>,"topics_mastered":<N>,"topics_progressing":<N>,"topics_weak":<N>,"stress":"<progress.stress_level>"}}
 ```
 
 Use today's date (`2026-02-15` or the current date at runtime). Values come from the metrics computed in Step 2.

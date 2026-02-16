@@ -55,7 +55,7 @@ curl -fsSL https://opencode.ai/install | bash
    ```
 3. Escribe `/skills` en el TUI para ver las skills disponibles. Open Code las descubre automáticamente desde `.opencode/skills/` (o desde `.claude/skills/` como fallback).
 
-> Modelos recomendados: `moonshot/kimi-k2` (sesiones de estudio y quiz) · `minimax/m2.1` (tareas ligeras como `/status`)
+> Modelos recomendados: `moonshot/kimi-k2` (sesiones de estudio y quiz) · `minimax/m2.1` (tareas ligeras como `/dashboard`)
 
 ### Opción C — Gemini CLI
 
@@ -75,7 +75,7 @@ npm install -g @google/gemini-cli
    - _"Quiero comenzar mi configuración inicial"_ → activa `onboard`
    - _"Quiero estudiar el siguiente tema de mi ruta"_ → activa `study`
    - _"Hazme un quiz sobre el tema que estudiamos"_ → activa `quiz`
-   - _"Muéstrame mi progreso"_ → activa `status`
+   - _"Muéstrame mi progreso"_ → activa `dashboard`
 
    También puedes listar las skills disponibles con `/skills list`.
 
@@ -132,7 +132,7 @@ Cinco preguntas en formato EGEL sobre el tema. Tu puntaje actualiza tu hoja de r
 **4. Revisa tu progreso:**
 
 ```
-/status
+/dashboard
 ```
 
 Panel con rachas, temas dominados, áreas débiles y la siguiente recomendación.
@@ -146,7 +146,7 @@ Panel con rachas, temas dominados, áreas débiles y la siguiente recomendación
 | `/onboard` | Configuración inicial — genera tu perfil de aprendizaje    |
 | `/study`   | Sesión de estudio diaria sobre tu próximo tema en la ruta  |
 | `/quiz`    | Evaluación de 5 preguntas después de una sesión de estudio |
-| `/status`  | Ver tu panel de progreso y racha                           |
+| `/dashboard` | Ver tu panel de progreso y racha                         |
 
 > Las skills están definidas en `.claude/skills/<nombre>/SKILL.md` y son compatibles con Claude Code, Open Code, Gemini CLI y OpenAI Codex _(sin pruebas en Codex)_. No se requiere configuración adicional — basta con clonar el repositorio.
 
@@ -172,7 +172,7 @@ adaptive-egel/
 │   ├── onboard/SKILL.md      # Evaluación psicológica y de conocimiento inicial
 │   ├── study/SKILL.md        # Sesión de estudio adaptativa diaria
 │   ├── quiz/SKILL.md         # Evaluación dinámica + actualización de hoja de ruta
-│   └── status/SKILL.md       # Panel de progreso
+│   └── dashboard/SKILL.md    # Panel de progreso
 ├── .gemini/skills/            # Symlinks → .claude/skills/ (Gemini CLI)
 ├── .opencode/
 │   └── skills/                # Symlinks → .claude/skills/ (Open Code)

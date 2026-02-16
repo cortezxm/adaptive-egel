@@ -1,10 +1,10 @@
-name: status
+name: dashboard
 description: Progress dashboard showing study streak, mastered topics, weak areas, and next recommended action.
 invocation:
   explicit: true
   implicit: true
   triggers:
-    - "/status"
+    - "/dashboard"
     - "show my progress"
     - "how am I doing"
     - "progress report"
