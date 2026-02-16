@@ -15,6 +15,44 @@ Adaptive-EGEL helps CS students in Mexico prepare for the EGEL-COMPU (General Ex
 
 ---
 
+## Requisitos y configuración
+
+Adaptive-EGEL funciona como un conjunto de *skills* que se ejecutan dentro de un agente de IA. Elige la herramienta que prefieras:
+
+### Opción A — Claude Code (CLI)
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+1. Clona el repositorio y entra al directorio:
+   ```bash
+   git clone <url-del-repo> && cd adaptive-egel
+   ```
+2. Inicia una sesión:
+   ```bash
+   claude
+   ```
+3. Escribe `/onboard` y presiona Enter — las skills se descubren automáticamente desde `.claude/skills/`.
+
+### Opción B — OpenCode (opencode.ai)
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+1. Clona el repositorio y entra al directorio:
+   ```bash
+   git clone <url-del-repo> && cd adaptive-egel
+   ```
+2. Inicia una sesión:
+   ```bash
+   opencode
+   ```
+3. Escribe `/skills` en el TUI para ver las skills disponibles y selecciona la que necesitas (por ejemplo, `onboard`, `study`, `quiz`). OpenCode descubre las skills automáticamente desde `.claude/skills/`.
+
+---
+
 ## Quick Start
 
 **1. Start your profile (run once):**
@@ -59,6 +97,8 @@ Dashboard showing streaks, mastered topics, weak areas, and next recommendation.
 | `/study`   | Daily study session on your next roadmap topic     |
 | `/quiz`    | 5-question assessment after a study session        |
 | `/status`  | View your progress dashboard and streak            |
+
+> Las skills están definidas en `.claude/skills/<nombre>/SKILL.md` y son compatibles con Claude Code y OpenCode. No se requiere configuración adicional — basta con clonar el repositorio.
 
 ---
 
