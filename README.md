@@ -1,17 +1,17 @@
 # Adaptive-EGEL
 
-An intelligent tutoring system for the **EGEL-COMPU** exam, powered by Claude Code / Open Code / Gemini CLI. Transforms static study guides into a personalized, adaptive learning experience driven by evidence-based cognitive science.
+Sistema de tutoría inteligente para el examen **EGEL-COMPU**, impulsado por Claude Code / Open Code / Gemini CLI. Transforma guías de estudio estáticas en una experiencia de aprendizaje personalizada y adaptativa basada en ciencia cognitiva con respaldo empírico.
 
 ---
 
-## What is it?
+## ¿Qué es?
 
-Adaptive-EGEL helps CS students in Mexico prepare for the EGEL-COMPU (General Exam for Bachelor's Degree in Computing) through:
+Adaptive-EGEL ayuda a estudiantes de Computación en México a prepararse para el EGEL-COMPU (Examen General para el Egreso de la Licenciatura en Computación) mediante:
 
-- **Personalized study sessions** that adapt to your learning level, motivation, and anxiety profile
-- **Dynamic roadmap** that prioritizes topics based on your scores, failures, and prerequisites
-- **Socratic questioning** instead of passive reading — you discover concepts by answering guided questions
-- **Evidence-based profiling** built on self-efficacy theory (Bandura), Self-Determination Theory (Deci & Ryan), Vygotsky's ZPD, and metacognitive monitoring
+- **Sesiones de estudio personalizadas** que se adaptan a tu nivel, motivación y perfil de ansiedad
+- **Hoja de ruta dinámica** que prioriza temas según tus puntajes, fallas y prerrequisitos
+- **Cuestionamiento socrático** en lugar de lectura pasiva — descubres conceptos respondiendo preguntas guiadas
+- **Perfilado basado en evidencia** fundamentado en la teoría de autoeficacia (Bandura), la Teoría de la Autodeterminación (Deci & Ryan), la ZPD de Vygotsky y el monitoreo metacognitivo
 
 ---
 
@@ -53,194 +53,194 @@ curl -fsSL https://opencode.ai/install | bash
 
 ---
 
-## Quick Start
+## Inicio rápido
 
-**1. Start your profile (run once):**
+**1. Crea tu perfil (solo una vez):**
 
 ```
 /onboard
 ```
 
-This asks ~25 questions across 5 blocks (context, metacognition, motivation, anxiety, cognitive preferences) and generates your personalized profile.
+Responde ~25 preguntas distribuidas en 5 bloques (contexto, metacognición, motivación, ansiedad, preferencias cognitivas) para generar tu perfil personalizado.
 
-**2. Begin a study session:**
+**2. Comienza una sesión de estudio:**
 
 ```
 /study
 ```
 
-The tutor selects the best topic for you, loads the material, and guides you with Socratic questions calibrated to your level.
+El tutor selecciona el mejor tema para ti, carga el material y te guía con preguntas socráticas calibradas a tu nivel.
 
-**3. Validate what you learned:**
+**3. Valida lo que aprendiste:**
 
 ```
 /quiz
 ```
 
-Five EGEL-format questions on the topic. Your score updates your roadmap and evolves your profile.
+Cinco preguntas en formato EGEL sobre el tema. Tu puntaje actualiza tu hoja de ruta y hace evolucionar tu perfil.
 
-**4. Check your progress:**
+**4. Revisa tu progreso:**
 
 ```
 /status
 ```
 
-Dashboard showing streaks, mastered topics, weak areas, and next recommendation.
+Panel con rachas, temas dominados, áreas débiles y la siguiente recomendación.
 
 ---
 
-## Skills Reference
+## Referencia de skills
 
-| Skill      | When to use                                        |
-| ---------- | -------------------------------------------------- |
-| `/onboard` | First time setup — generates your learning profile |
-| `/study`   | Daily study session on your next roadmap topic     |
-| `/quiz`    | 5-question assessment after a study session        |
-| `/status`  | View your progress dashboard and streak            |
+| Skill      | Cuándo usarla                                              |
+| ---------- | ---------------------------------------------------------- |
+| `/onboard` | Configuración inicial — genera tu perfil de aprendizaje    |
+| `/study`   | Sesión de estudio diaria sobre tu próximo tema en la ruta  |
+| `/quiz`    | Evaluación de 5 preguntas después de una sesión de estudio |
+| `/status`  | Ver tu panel de progreso y racha                           |
 
 > Las skills están definidas en `.claude/skills/<nombre>/SKILL.md` y son compatibles con Claude Code y OpenCode. No se requiere configuración adicional — basta con clonar el repositorio.
 
 ---
 
-## Architecture
+## Arquitectura
 
-### Three-Layer Design
+### Diseño de tres capas
 
 ```
-Knowledge Layer      → knowledge_base/ (study guides + topic index)
-User State Layer     → user_profile/ + progress/ (psyche.json, progress.json, sessions.jsonl)
-Orchestration Layer  → .claude/skills/ (stateless Claude Code skills)
+Capa de conocimiento    → knowledge_base/ (guías de estudio + índice de temas)
+Capa de estado          → user_profile/ + progress/ (psyche.json, progress.json, sessions.jsonl)
+Capa de orquestación    → .claude/skills/ (skills de Claude Code sin estado)
 ```
 
-**Key principle:** Every skill is stateless and file-driven. There is no database, no backend — all state lives in human-readable JSON files that you can inspect and modify directly.
+**Principio clave:** Cada skill es sin estado y orientada a archivos. No hay base de datos ni backend — todo el estado vive en archivos JSON legibles por humanos que puedes inspeccionar y modificar directamente.
 
-### File Structure
+### Estructura de archivos
 
 ```
 adaptive-egel/
 ├── .claude/skills/
-│   ├── onboard/SKILL.md      # Initial psychological & knowledge assessment
-│   ├── study/SKILL.md        # Daily adaptive study session
-│   ├── quiz/SKILL.md         # Dynamic assessment + roadmap update
-│   └── status/SKILL.md       # Progress dashboard
+│   ├── onboard/SKILL.md      # Evaluación psicológica y de conocimiento inicial
+│   ├── study/SKILL.md        # Sesión de estudio adaptativa diaria
+│   ├── quiz/SKILL.md         # Evaluación dinámica + actualización de hoja de ruta
+│   └── status/SKILL.md       # Panel de progreso
 ├── knowledge_base/
-│   ├── index_map.json         # Topic metadata (prerequisites, difficulty, EGEL area)
-│   └── guias/                 # Study guide .md files (one per topic)
+│   ├── index_map.json         # Metadatos de temas (prerrequisitos, dificultad, área EGEL)
+│   └── guias/                 # Archivos .md de guías de estudio (uno por tema)
 ├── user_profile/
-│   └── psyche.json            # Your learning profile (evidence-based, v2)
+│   └── psyche.json            # Tu perfil de aprendizaje (basado en evidencia, v2)
 ├── progress/
-│   ├── progress.json          # Scores, streak, roadmap order
-│   └── sessions.jsonl         # Append-only session history
+│   ├── progress.json          # Puntajes, racha, orden de la hoja de ruta
+│   └── sessions.jsonl         # Historial de sesiones (solo se agrega, nunca se borra)
 ├── README.md
-├── CLAUDE.md                  # Instructions for Claude Code
-├── first-prd.md               # Product Requirements Document
-└── first-plan.md              # Implementation plan
+├── CLAUDE.md                  # Instrucciones para Claude Code
+├── first-prd.md               # Documento de Requisitos del Producto
+└── first-plan.md              # Plan de implementación
 ```
 
 ---
 
-## The EGEL-COMPU Exam
+## El examen EGEL-COMPU
 
-The EGEL-COMPU covers 4 areas:
+El EGEL-COMPU cubre 4 áreas:
 
-| Area                                | Topics                                                           |
-| ----------------------------------- | ---------------------------------------------------------------- |
-| **Área 1 — Algoritmia**             | Algorithms, data structures, discrete mathematics, logic         |
-| **Área 2 — Software de Base**       | Computer architecture, OS, compilers, networks                   |
-| **Área 3 — Software de Aplicación** | Software engineering, programming languages, databases, security |
-| **Área 4 — Cómputo Inteligente**    | AI, data mining, distributed computing                           |
+| Área                                | Temas                                                                              |
+| ----------------------------------- | ---------------------------------------------------------------------------------- |
+| **Área 1 — Algoritmia**             | Algoritmos, estructuras de datos, matemáticas discretas, lógica                    |
+| **Área 2 — Software de Base**       | Arquitectura de computadoras, sistemas operativos, compiladores, redes             |
+| **Área 3 — Software de Aplicación** | Ingeniería de software, lenguajes de programación, bases de datos, seguridad       |
+| **Área 4 — Cómputo Inteligente**    | Inteligencia artificial, minería de datos, cómputo distribuido                     |
 
-Each area has two performance levels: **Satisfactorio** (passing) and **Sobresaliente** (distinction). The tutor covers both.
-
----
-
-## Your Learning Profile (`psyche.json`)
-
-Your profile is built on validated cognitive science — not debunked "learning style" inventories.
-
-### What it measures
-
-| Dimension                  | Based on                                | How it's used                                                                      |
-| -------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------- |
-| **Self-efficacy**          | Bandura (1997)                          | Low → more scaffolding + "this is achievable" framing                              |
-| **Metacognition**          | Flavell / Schraw                        | Low self-monitoring → insert comprehension checks                                  |
-| **Motivation**             | Self-Determination Theory (Deci & Ryan) | Autonomy need → offer choices; External regulation → connect to EGEL outcomes      |
-| **Cognitive profile**      | Cognitive Load Theory                   | Load tolerance → chunk size; Focus duration → break suggestions                    |
-| **Mindset**                | Dweck (2006, refined)                   | Helplessness pattern → micro-steps + celebrate; Growth belief → normalize struggle |
-| **Anxiety profile**        | Exam anxiety research                   | High trait anxiety → use "práctica" not "quiz"; Reduce scope under stress          |
-| **Scaffolding (ZPD)**      | Vygotsky                                | Moves from modeled → guided → independent as mastery grows                         |
-| **Confidence calibration** | Metacognitive monitoring                | Overconfident → harder questions; Underconfident → reveal positive gap             |
-| **Strategy effectiveness** | Learning analytics                      | Strategies with < 30% effectiveness after 3 uses are flagged for replacement       |
-
-### How it evolves
-
-Your profile is **not static** — it updates after every session:
-
-- `/onboard` — sets initial values from your 25-question interview
-- `/study` — updates `state_anxiety` and `zpd_level` based on session behavior
-- `/quiz` — updates `self_efficacy`, `confidence_calibration`, `scaffolding.zpd_level`, and `strategy_effectiveness`
-
-**Damping rule:** No numeric field changes by more than ±0.1 per session to prevent noise-driven swings.
+Cada área tiene dos niveles de desempeño: **Satisfactorio** (aprobatorio) y **Sobresaliente** (distinción). El tutor cubre ambos.
 
 ---
 
-## Roadmap Logic
+## Tu perfil de aprendizaje (`psyche.json`)
 
-The tutor automatically prioritizes topics using this formula:
+Tu perfil se construye sobre ciencia cognitiva validada — no sobre inventarios de "estilos de aprendizaje" sin respaldo empírico.
+
+### Qué mide
+
+| Dimensión                       | Basada en                                        | Cómo se usa                                                                                   |
+| ------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| **Autoeficacia**                | Bandura (1997)                                   | Baja → más andamiaje + encuadre de "esto es alcanzable"                                       |
+| **Metacognición**               | Flavell / Schraw                                 | Bajo automonitoreo → insertar verificaciones de comprensión                                   |
+| **Motivación**                  | Teoría de la Autodeterminación (Deci & Ryan)     | Necesidad de autonomía → ofrecer opciones; regulación externa → conectar con objetivos EGEL   |
+| **Perfil cognitivo**            | Teoría de la Carga Cognitiva                     | Tolerancia a la carga → tamaño de fragmentos; duración de foco → sugerencias de descanso      |
+| **Mentalidad**                  | Dweck (2006, refinada)                           | Patrón de indefensión → micro-pasos + celebrar; creencia de crecimiento → normalizar dificultad |
+| **Perfil de ansiedad**          | Investigación sobre ansiedad ante exámenes       | Alta ansiedad rasgo → usar "práctica" en lugar de "quiz"; reducir alcance bajo estrés         |
+| **Andamiaje (ZPD)**             | Vygotsky                                         | Avanza de modelado → guiado → independiente a medida que crece el dominio                     |
+| **Calibración de confianza**    | Monitoreo metacognitivo                          | Sobreconfiado → preguntas más difíciles; subconfiado → revelar brecha positiva                |
+| **Efectividad de estrategias**  | Analítica de aprendizaje                         | Estrategias con < 30% de efectividad tras 3 usos se marcan para reemplazo                    |
+
+### Cómo evoluciona
+
+Tu perfil **no es estático** — se actualiza después de cada sesión:
+
+- `/onboard` — establece los valores iniciales desde tu entrevista de 25 preguntas
+- `/study` — actualiza `state_anxiety` y `zpd_level` según el comportamiento en sesión
+- `/quiz` — actualiza `self_efficacy`, `confidence_calibration`, `scaffolding.zpd_level` y `strategy_effectiveness`
+
+**Regla de amortiguación:** Ningún campo numérico cambia más de ±0.1 por sesión para evitar oscilaciones por ruido.
+
+---
+
+## Lógica de la hoja de ruta
+
+El tutor prioriza los temas automáticamente con esta fórmula:
 
 ```
-score < 70% AND attempted  → priority 1  (needs urgent review)
-3+ consecutive failures    → priority 2  (activate deep support)
-score 70-84% AND attempted → priority 3  (progressing, needs refinement)
-score >= 85%               → priority 4  (mastered)
-never attempted            → priority 5  (respect original order)
+puntaje < 70% Y con intentos  → prioridad 1  (necesita revisión urgente)
+3+ fallas consecutivas         → prioridad 2  (activar apoyo profundo)
+puntaje 70-84% Y con intentos  → prioridad 3  (progresando, necesita refinamiento)
+puntaje >= 85%                 → prioridad 4  (dominado)
+nunca intentado                → prioridad 5  (respetar orden original)
 ```
 
-Prerequisites are always respected: a topic won't appear in your roadmap until its prerequisites reach 60%.
+Los prerrequisitos siempre se respetan: un tema no aparecerá en tu hoja de ruta hasta que sus prerrequisitos alcancen el 60%.
 
-Score updates use a **weighted average** to preserve accumulated progress:
+Las actualizaciones de puntaje usan un **promedio ponderado** para preservar el progreso acumulado:
 
 ```
-new_score = old_score × 0.35 + quiz_score × 0.65
+nuevo_puntaje = puntaje_anterior × 0.35 + puntaje_quiz × 0.65
 ```
 
 ---
 
-## Configuration
+## Configuración
 
-You can inspect and manually edit your state files at any time:
+Puedes inspeccionar y editar manualmente tus archivos de estado en cualquier momento:
 
-- `user_profile/psyche.json` — your learning profile (all 0.0–1.0 numeric fields, string enums)
-- `progress/progress.json` — topic scores, roadmap order, session streak
-- `progress/sessions.jsonl` — full history of every session (append-only)
+- `user_profile/psyche.json` — tu perfil de aprendizaje (todos los campos numéricos de 0.0 a 1.0, enumeraciones de cadenas)
+- `progress/progress.json` — puntajes por tema, orden de la hoja de ruta, racha de sesiones
+- `progress/sessions.jsonl` — historial completo de cada sesión (solo se agrega)
 
-If you want to **reset your profile**, delete or reset `user_profile/psyche.json` to `status: "bootstrap-default"` and run `/onboard` again.
-
----
-
-## Design Decisions
-
-**Why file-based state (no database)?**
-
-- Human-readable and version-controllable
-- User can inspect or modify directly
-- Aligns with Claude Code's stateless, file-first philosophy
-
-**Why stateless skills?**
-
-- Each invocation is independent and reproducible
-- No hidden state between sessions
-- Easier to debug
-
-**Why evidence-based profiling instead of VARK?**
-
-- VARK learning styles have no empirical support for improving outcomes (Pashler et al., 2008; Rogowsky et al., 2015)
-- Self-efficacy, SDT motivation, and ZPD scaffolding have decades of evidence and directly map to pedagogical adaptations
+Si deseas **reiniciar tu perfil**, elimina o restablece `user_profile/psyche.json` a `status: "bootstrap-default"` y ejecuta `/onboard` de nuevo.
 
 ---
 
-## Credits
+## Decisiones de diseño
 
-- EGEL-COMPU exam structure: CENEVAL (Centro Nacional de Evaluación para la Educación Superior)
-- Original inspiration: [juanQNav/Egel-computer-science](https://github.com/juanQNav/Egel-computer-science)
-- Built with [Claude Code](https://claude.ai/code)
+**¿Por qué estado en archivos (sin base de datos)?**
+
+- Legible por humanos y controlable por versiones
+- El usuario puede inspeccionar o modificar directamente
+- Se alinea con la filosofía sin estado y orientada a archivos de Claude Code
+
+**¿Por qué skills sin estado?**
+
+- Cada invocación es independiente y reproducible
+- Sin estado oculto entre sesiones
+- Más fácil de depurar
+
+**¿Por qué perfilado basado en evidencia en lugar de VARK?**
+
+- Los estilos de aprendizaje VARK no tienen respaldo empírico para mejorar resultados (Pashler et al., 2008; Rogowsky et al., 2015)
+- La autoeficacia, la motivación SDT y el andamiaje ZPD cuentan con décadas de evidencia y se mapean directamente a adaptaciones pedagógicas
+
+---
+
+## Créditos
+
+- Estructura del examen EGEL-COMPU: CENEVAL (Centro Nacional de Evaluación para la Educación Superior)
+- Inspiración original: [juanQNav/Egel-computer-science](https://github.com/juanQNav/Egel-computer-science)
+- Construido con [Claude Code](https://claude.ai/code)
