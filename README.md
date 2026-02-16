@@ -156,7 +156,7 @@ Cada área tiene dos niveles de desempeño: **Satisfactorio** (aprobatorio) y **
 
 ## Tu perfil de aprendizaje (`psyche.json`)
 
-Tu perfil se construye sobre ciencia cognitiva validada — no sobre inventarios de "estilos de aprendizaje" sin respaldo empírico.
+Tu perfil se construye sobre ciencia cognitiva validada.
 
 ### Qué mide
 
@@ -231,11 +231,6 @@ Si deseas **reiniciar tu perfil**, elimina o restablece `user_profile/psyche.jso
 - Cada invocación es independiente y reproducible
 - Sin estado oculto entre sesiones
 - Más fácil de depurar
-
-**¿Por qué perfilado basado en evidencia en lugar de VARK?**
-
-- Los estilos de aprendizaje VARK no tienen respaldo empírico para mejorar resultados (Pashler et al., 2008; Rogowsky et al., 2015)
-- La autoeficacia, la motivación SDT y el andamiaje ZPD cuentan con décadas de evidencia y se mapean directamente a adaptaciones pedagógicas
 
 ---
 
