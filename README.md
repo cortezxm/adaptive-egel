@@ -1,6 +1,6 @@
 # Adaptive-EGEL
 
-Sistema de tutoría inteligente para el examen **EGEL-COMPU**, impulsado por Claude Code / Open Code / Gemini CLI. Transforma guías de estudio estáticas en una experiencia de aprendizaje personalizada y adaptativa basada en ciencia cognitiva con respaldo empírico.
+Sistema de tutoría inteligente para el examen **EGEL-COMPU**, impulsado por Claude Code / Open Code. Transforma guías de estudio estáticas en una experiencia de aprendizaje personalizada y adaptativa basada en ciencia cognitiva con respaldo empírico.
 
 ---
 
