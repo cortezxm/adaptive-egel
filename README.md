@@ -1,12 +1,12 @@
 # Adaptive-EGEL
 
-Sistema de tutoría inteligente para el examen **EGEL-COMPU**, impulsado por Claude Code / Open Code. Transforma guías de estudio estáticas en una experiencia de aprendizaje personalizada y adaptativa basada en ciencia cognitiva con respaldo empírico.
+Sistema de tutoría inteligente para el examen **EGEL Plus COMPU**, impulsado por Claude Code / Open Code. Transforma guías de estudio estáticas en una experiencia de aprendizaje personalizada y adaptativa basada en ciencia cognitiva con respaldo empírico.
 
 ---
 
 ## ¿Qué es?
 
-Adaptive-EGEL ayuda a estudiantes de Computación en México a prepararse para el EGEL-COMPU (Examen General para el Egreso de la Licenciatura en Computación) mediante:
+Adaptive-EGEL ayuda a estudiantes de Ciencias Computacionales en México a prepararse para el EGEL Plus COMPU (Examen General para el Egreso de la Licenciatura en Ciencias Computacionales) mediante:
 
 - **Sesiones de estudio personalizadas** que se adaptan a tu nivel, motivación y perfil de ansiedad
 - **Hoja de ruta dinámica** que prioriza temas según tus puntajes, fallas y prerrequisitos
