@@ -1,35 +1,95 @@
 {
-  "status": "active",
-  "user_name": "Cortez",
-  "learning_style": "kinesthetic",
-  "pace": "fast",
-  "primary_motivator": "intrinsic-understanding",
-  "stress_baseline": "medium",
-  "error_tolerance": "high",
-  "preferred_feedback": "detailed-analytical",
-  "focus_duration_minutes": 15,
-  "daily_study_hours": 1,
-  "egel_attempts": 0,
-  "area_confidence": {
-    "1_algoritmia": 3,
-    "2_software_base": 2,
-    "3_software_aplicacion": 3,
-    "4_computo_inteligente": 1
+  "schema_version": 2,
+  "status": "bootstrap-default",
+  "user_name": "",
+  "onboard_date": "",
+  "last_updated": "",
+
+  "self_efficacy": {
+    "global": 0.5,
+    "by_area": {
+      "1_algoritmia": 0.5,
+      "2_software_base": 0.5,
+      "3_software_aplicacion": 0.5,
+      "4_computo_inteligente": 0.5
+    }
   },
-  "strategies": {
-    "frustration": "Cambiar a analogías del mundo real + mostrar diferentes enfoques prácticos para que puedas probar alternativas",
-    "streak_broken": "Recordar tu motivación intrínseca (entender cómo funcionan las cosas) + enfocarte en comprender un concepto pequeño",
-    "high_stress": "Sesión ultra-corta de 10 minutos con un ejercicio práctico simple + celebrar el intento sin importar el resultado"
+
+  "metacognition": {
+    "self_monitoring": 0.5,
+    "calibration_accuracy": 0.5,
+    "strategy_awareness": 0.5
   },
-  "learning_preferences": {
-    "session_length_minutes": 20,
-    "prefers_breadth_first": true,
-    "comfortable_with_multiple_choice": true,
-    "main_concern": "depth-required",
-    "visual_preference": "videos",
-    "explanation_style": "analogies",
-    "problem_solving_approach": "try-different-approaches",
-    "failure_response": "motivated-to-retry"
+
+  "motivation": {
+    "autonomy_need": 0.5,
+    "competence_need": 0.5,
+    "relatedness_need": 0.5,
+    "orientation": "mastery",
+    "regulation_type": "identified"
   },
-  "last_updated": "2026-02-15"
+
+  "cognitive_profile": {
+    "load_tolerance": 0.5,
+    "preferred_chunk_size": "medium",
+    "focus_duration_minutes": 30,
+    "daily_available_minutes": 60
+  },
+
+  "mindset": {
+    "growth_belief": 0.5,
+    "failure_response": "persistence",
+    "attribution_style": "effort"
+  },
+
+  "anxiety_profile": {
+    "trait_exam_anxiety": 0.5,
+    "state_anxiety": 0.3,
+    "failure_recovery_speed": "moderate",
+    "anxiety_triggers": []
+  },
+
+  "scaffolding": {
+    "zpd_level": "guided",
+    "hint_preference": 0.5,
+    "explanation_depth": "moderate"
+  },
+
+  "study_habits": {
+    "spacing_awareness": 0.5,
+    "retrieval_practice_awareness": 0.5,
+    "self_regulation": 0.5,
+    "egel_attempts": 0,
+    "prior_formal_study": true
+  },
+
+  "feedback_profile": {
+    "directness": 0.5,
+    "emotional_support": 0.5,
+    "detail_level": 0.5,
+    "celebration_preference": 0.5
+  },
+
+  "confidence_calibration": {
+    "by_area": {
+      "1_algoritmia": { "predicted": null, "actual": null },
+      "2_software_base": { "predicted": null, "actual": null },
+      "3_software_aplicacion": { "predicted": null, "actual": null },
+      "4_computo_inteligente": { "predicted": null, "actual": null }
+    },
+    "calibration_gap": null,
+    "pattern": null
+  },
+
+  "active_strategies": {
+    "default_pedagogy": "socratic_guided",
+    "frustration": "switch_to_analogy",
+    "plateau": "introduce_interleaving",
+    "high_anxiety": "reduce_scope_and_celebrate",
+    "overconfidence": "challenge_with_edge_cases",
+    "underconfidence": "scaffold_and_celebrate_small_wins",
+    "streak_broken": "normalize_and_reconnect"
+  },
+
+  "strategy_effectiveness": {}
 }

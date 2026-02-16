@@ -7,7 +7,7 @@ description: "Use this skill when the user runs /study, says they want to study,
 
 ## Purpose
 
-Socratic study session. Brief context of the topic, then 5-8 short questions that guide the user to discover concepts themselves. No long text blocks. If the user answers wrong: brief explanation + move on.
+Socratic study session. Brief context of the topic, then 5-8 short questions that guide the user to discover concepts themselves. No long text blocks. If the user answers wrong: brief explanation + move on. All pedagogy is driven by evidence-based dimensions from `psyche.json` v2.
 
 ## MANDATORY Actions
 
@@ -26,6 +26,7 @@ Socratic study session. Brief context of the topic, then 5-8 short questions tha
 | **S6** | Execute passive burnout detection throughout the session |
 | **S7** | Update `progress.json` (streak, total_sessions, last_study_date, roadmap_order) at close |
 | **S8** | Close with explicit recommendation: "Ejecuta `/quiz` para validar lo aprendido" |
+| **S9** | Update `psyche.json` at session close (state_anxiety, zpd_level evolution) |
 
 ## Flow
 
@@ -38,7 +39,16 @@ Read these files in order:
 
 If `psyche.json` has `status: "bootstrap-default"`, tell user: "Aún no has completado tu calibración. Ejecuta `/onboard` primero."
 
-### 2. Select Topic
+### 2. Session History Trend Analysis
+
+Read the last 5 entries from `progress/sessions.jsonl`. Analyze:
+
+- **Sustained anxiety:** If `metrics.stress` is `"alto"` in 3+ of the last 5 sessions → activate `active_strategies.high_anxiety` at the start of this session (open with a normalizing message before content)
+- **Improving scores trend:** If quiz scores have been rising in the last 3 sessions → consider moving `scaffolding.zpd_level` one step toward `"independent"` during this session
+- **Streak broken:** If `study_streak` in `progress.json` is 1 AND previous sessions show a gap → trigger `active_strategies.streak_broken` in the opening message (normalize lapse, reconnect to motivation)
+- **Plateau:** If the same topic appears in the last 3 sessions without score improvement → consider applying `active_strategies.plateau` (introduce interleaving with a related topic)
+
+### 3. Select Topic
 
 Take `roadmap_order[0]` from `progress.json`.
 
@@ -46,82 +56,133 @@ Take `roadmap_order[0]` from `progress.json`.
 - Skip to the next topic in roadmap that has its prerequisites met
 - If no topic has prerequisites met, fall back to a beginner topic with no prerequisites (discrete-mathematics or programming-languages)
 
-### 3. Announce [S4, G1]
+### 4. Announce [S4, G1]
 
 Start the session by announcing in Spanish:
 - The EGEL area: "**Área [N]: [Area Name]**"
 - The topic: "[Topic Title]"
 - Brief context of why this topic is next in their roadmap
 
-### 4. Load Content [S1]
+### 5. Load Content [S1]
 
 Read the topic `.md` file from `knowledge_base/` using the path from `index_map.json`.
 
-If the topic has prerequisites with `score < 80`, also load prerequisite `.md` files for reference (max ~50k tokens total).
+If `cognitive_profile.load_tolerance < 0.4`:
+- Load only the topic file itself (no prerequisites)
+- Summarize prerequisite concepts in 2-3 sentences from memory rather than loading the file
+
+If load_tolerance >= 0.4 and prerequisites have `score < 80`:
+- Also load prerequisite `.md` files for reference (max ~50k tokens total)
 
 If a file is very large (>30k tokens), read only the first half and note that you're focusing on core concepts.
 
-### 5. Calibrate Pedagogy [S2]
+### 6. Calibrate Pedagogy [S2]
 
-Before presenting any content, apply `psyche.json`:
-- `learning_style: "examples"` → lead with concrete examples, then theory
-- `learning_style: "theory"` → lead with concepts, then examples
-- `learning_style: "visual"` → use diagrams, tables, ASCII art
-- `learning_style: "kinesthetic"` → use step-by-step walkthroughs, exercises
-- `pace: "slow"` → shorter sections, more pauses
-- `pace: "fast"` → denser content, fewer pauses
-- `preferred_feedback` → calibrate encouragement style
+Before presenting any content, read `psyche.json` and apply the following evidence-based adaptation matrix:
 
-### 6. Socratic Session [S3, S5, G1]
+#### Scaffolding-based question style (replaces VARK)
+
+| `zpd_level` | Approach |
+|---|---|
+| `independent` | Open-ended questions with no hints unless explicitly asked |
+| `guided` | Leading Socratic questions with gentle scaffolding ("Piensa en qué pasa cuando...") |
+| `structured` | Step-by-step guidance ("Primero veamos X. Dado X, ¿qué sucede con Y?") |
+| `modeled` | Worked example first, then learner attempts a variation |
+
+#### Self-efficacy adaptations
+
+- `self_efficacy.global < 0.3`: Open with "Este tema es completamente alcanzable" framing. Insert more frequent comprehension checks. End session with explicit summary of everything learned.
+- `self_efficacy.global 0.3–0.6`: Standard presentation.
+- `self_efficacy.global > 0.6`: Present challenge directly; allow more independence between questions.
+
+Per-area efficacy: Use `self_efficacy.by_area[topic.egel_area]` when available (more specific than global).
+
+#### Motivation adaptations
+
+- High `autonomy_need` (> 0.6): Offer a brief choice at the start: "¿Prefieres empezar por [subtema A] o [subtema B]?"
+- High `competence_need` (> 0.6): Use mastery markers mid-session ("Ya dominas 2 de 5 subtemas de este tema").
+- `orientation: "performance_avoidance"`: Never frame session as a test. Use collaborative language ("exploremos juntos", "veamos qué descubrimos").
+- `regulation_type: "external"`: Connect concepts explicitly to EGEL outcomes ("este tema aparece con ~3 preguntas en el examen").
+- `regulation_type: "intrinsic"`: Emphasize the elegance or depth of concepts.
+
+#### Metacognition adaptations
+
+- `metacognition.self_monitoring < 0.4`: Insert explicit comprehension checks every 2 questions ("¿Podrías explicar en tus propias palabras lo que acabamos de ver?"). This teaches self-monitoring explicitly.
+- `metacognition.strategy_awareness < 0.4`: After 2-3 questions, briefly name the study strategy being used ("Estamos usando retrieval practice — responder sin ver el material — que es más efectiva que releer").
+
+#### Feedback profile applied to every message
+
+- `feedback_profile.directness` controls correction style:
+  - > 0.6 → straightforward: "Incorrecto. La respuesta correcta es X porque..."
+  - < 0.4 → gentle: "Casi lo tienes — pensemos juntos en qué pasaría si..."
+- `feedback_profile.emotional_support` controls validation:
+  - > 0.6 → add validation before correction: "Es una confusión muy común..."
+  - < 0.4 → minimal preamble, go straight to content
+- `feedback_profile.detail_level` controls explanation depth:
+  - > 0.6 → provide full reasoning chain
+  - < 0.4 → one-sentence insight only
+- `feedback_profile.celebration_preference` controls win celebration:
+  - > 0.6 → explicit celebration on correct answers ("¡Exacto! Eso es precisamente...")
+  - < 0.4 → brief acknowledgment and move on ("Correcto.")
+
+#### Cognitive profile
+
+- `preferred_chunk_size: "small"` → 1-2 concepts per question exchange; pause after each
+- `preferred_chunk_size: "medium"` → 3-4 concepts; group related ideas
+- `preferred_chunk_size: "large"` → 4-5 concepts; more autonomous exploration
+- `focus_duration_minutes`: If session nears this limit (track question count as proxy), suggest: "¿Descansamos 5 minutos antes de continuar?"
+- `load_tolerance < 0.4`: Avoid loading prerequisites (see Section 5); summarize instead
+
+### 7. Socratic Session [S3, S5, G1]
 
 **NEVER dump long text blocks.** The session is question-driven, not lecture-driven.
 
-#### 6a. Brief Context (2-3 sentences max)
+#### 7a. Brief Context (2-3 sentences max)
 
 Give a short context of the topic: what it is, why it matters for the EGEL, and what subtopics you'll explore. This is the ONLY expository text in the session.
 
-#### 6b. Socratic Questions (5-8 questions, one at a time)
+#### 7b. Socratic Questions (5-8 questions, one at a time)
 
-Ask short, focused questions that guide the user to discover the concepts. **One question per message, wait for response.**
+Ask short, focused questions that guide the user to discover concepts. **One question per message, wait for response.**
 
 - Start with Nivel Satisfactorio concepts (fundamental)
 - Progress to Nivel Sobresaliente concepts (advanced) in later questions
-- Calibrate question style to `psyche.json` learning style:
-  - `examples` → "¿Qué pasaría si...?", scenario-based
-  - `theory` → "¿Por qué...?", "¿Cuál es la diferencia entre...?"
-  - `visual` → include small diagrams/tables in the question
-  - `kinesthetic` → "Traza paso a paso...", "¿Qué resultado da...?"
+- Style calibrated to `zpd_level` (see Section 6)
 
-#### 6c. Error Handling
+#### 7c. Error Handling
 
 When the user answers incorrectly:
-1. **Brief explanation** (2-3 sentences max) of why it's incorrect and what the correct answer is
-2. **One key insight** to anchor the concept
-3. **Move to the next question** — do not re-ask the same question
+1. Apply `feedback_profile.directness` and `emotional_support` (see Section 6)
+2. **Brief explanation** (2-3 sentences max) aligned to `feedback_profile.detail_level`
+3. **One key insight** to anchor the concept
+4. **Move to the next question** — do not re-ask the same question
 
-Do NOT give hints or re-ask. Explain briefly and advance.
-
-#### 6d. Correct Answer Handling
+#### 7d. Correct Answer Handling
 
 When the user answers correctly:
-1. **Brief confirmation** (1 sentence)
+1. Apply `feedback_profile.celebration_preference`
 2. **One additional insight** that deepens understanding (optional, only if relevant)
 3. Move to next question
 
-### 7. Passive Burnout Detection [S6]
+### 8. Passive Burnout Detection [S6]
 
 Throughout the session, monitor the user's messages for:
 - **Frustration language**: "no entiendo", "esto es imposible", "ya me cansé", short/terse responses
 - **Self-doubt**: "no soy bueno para esto", "nunca voy a pasar"
 - **Disengagement**: very short responses, "ok", "sí", single words repeatedly
 
-**If detected, adapt silently:**
-- Switch from theory to analogy or real-world example
+**If detected, adapt silently using `active_strategies`:**
+- Apply `active_strategies.frustration` (e.g., `switch_to_analogy` → pivot to a real-world analogy)
 - Reduce complexity, focus on one subtopic instead of many
-- Add encouraging language aligned to `psyche.json` strategies
+- Add encouraging language calibrated to `mindset.failure_response`
+  - `failure_response: "helplessness"` → break concept into micro-steps, celebrate each one
+  - `failure_response: "avoidance"` → gently suggest a different subtopic
+  - `failure_response: "persistence"` → offer a new analogy, validate the struggle
 - Do NOT announce that you're detecting burnout — just adapt naturally
 
-### 8. Close Session [S7, S8, G3, G4]
+Track strategy used (for effectiveness logging at session close).
+
+### 9. Close Session [S7, S8, S9, G3, G4]
 
 **Takeaways:** Provide 3-4 key takeaways in Spanish.
 
@@ -130,26 +191,35 @@ Throughout the session, monitor the user's messages for:
 - `study_streak`: if `last_study_date` is yesterday → increment; if today → keep; else → reset to 1
 - `last_study_date` → today
 - `total_sessions` → increment by 1
-- Reorder `roadmap_order` using the priority formula:
+- Reorder `roadmap_order` using the priority formula (see below)
 
-```
-score < 70 AND attempts > 0 → priority 1
-times_failed_consecutively >= 3 → priority 2
-score < 85 AND attempts > 0 → priority 3
-score >= 85 → priority 4
-attempts == 0 → priority 5
-```
+**Evolve psyche.json [S9, G4]:**
 
-Respect prerequisites when ordering.
+Read `user_profile/psyche.json`, then update (damping rule: no field changes by more than ±0.1 per session):
+
+1. `anxiety_profile.state_anxiety`:
+   - If frustration/disengagement detected during session → increase by 0.05–0.10 (cap at 1.0)
+   - If session completed smoothly → decrease by 0.05 (floor at 0.0)
+
+2. `scaffolding.zpd_level` evolution:
+   - If user answered 5+ questions correctly without hints → move one step toward `"independent"` (modeled→guided→independent)
+   - If user required correction on 4+ questions → move one step toward `"structured"` (independent→guided→structured→modeled)
+   - Damping: only change if pattern is consistent in 2+ consecutive sessions (check sessions.jsonl)
+
+3. `last_updated` → today
+
+**Log strategies used [G3]:** In the session log, record which `active_strategies` were triggered.
 
 **Log session [G3]:**
 Append to `progress/sessions.jsonl`:
 ```json
-{"date":"<YYYY-MM-DD>","skill":"/study","topic":"<topic-id>","details":"session-complete","metrics":{"stress":"<current level>","streak":<number>}}
+{"date":"<YYYY-MM-DD>","skill":"/study","topic":"<topic-id>","details":"session-complete","metrics":{"stress":"<state_anxiety level>","streak":<number>,"zpd_level":"<current>","strategies_used":["<list>"]}}
 ```
 
 **Recommendation [S8]:**
 End with: **"Ejecuta `/quiz` para validar lo que aprendiste sobre [Topic Title]."**
+
+If `anxiety_profile.trait_exam_anxiety > 0.7`, frame quiz as: "Ejecuta `/quiz` para una práctica rápida sobre [Topic Title]."
 
 ## Roadmap Priority Formula
 
