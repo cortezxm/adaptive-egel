@@ -27,7 +27,7 @@ npm install -g @anthropic-ai/claude-code
 
 1. Clona el repositorio y entra al directorio:
    ```bash
-   git clone <url-del-repo> && cd adaptive-egel
+   git clone https://github.com/cortezxm/adaptive-egel && cd adaptive-egel
    ```
 2. Inicia una sesión:
    ```bash
@@ -43,7 +43,7 @@ curl -fsSL https://opencode.ai/install | bash
 
 1. Clona el repositorio y entra al directorio:
    ```bash
-   git clone <url-del-repo> && cd adaptive-egel
+   git clone https://github.com/cortezxm/adaptive-egel && cd adaptive-egel
    ```
 2. Inicia una sesión:
    ```bash
