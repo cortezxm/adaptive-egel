@@ -17,7 +17,7 @@ Adaptive-EGEL ayuda a estudiantes de Ciencias Computacionales en México a prepa
 
 ## Requisitos y configuración
 
-Adaptive-EGEL funciona como un conjunto de *skills* que se ejecutan dentro de un agente de IA. Elige la herramienta que prefieras:
+Adaptive-EGEL funciona como un conjunto de _skills_ que se ejecutan dentro de un agente de IA. Elige la herramienta que prefieras:
 
 ### Opción A — Claude Code (CLI)
 
@@ -133,8 +133,7 @@ adaptive-egel/
 │   └── sessions.jsonl         # Historial de sesiones (solo se agrega, nunca se borra)
 ├── README.md
 ├── CLAUDE.md                  # Instrucciones para Claude Code
-├── first-prd.md               # Documento de Requisitos del Producto
-└── first-plan.md              # Plan de implementación
+└── AGENTS.md                  # Instrucciones para Open Code
 ```
 
 ---
@@ -143,12 +142,12 @@ adaptive-egel/
 
 El EGEL-COMPU cubre 4 áreas:
 
-| Área                                | Temas                                                                              |
-| ----------------------------------- | ---------------------------------------------------------------------------------- |
-| **Área 1 — Algoritmia**             | Algoritmos, estructuras de datos, matemáticas discretas, lógica                    |
-| **Área 2 — Software de Base**       | Arquitectura de computadoras, sistemas operativos, compiladores, redes             |
-| **Área 3 — Software de Aplicación** | Ingeniería de software, lenguajes de programación, bases de datos, seguridad       |
-| **Área 4 — Cómputo Inteligente**    | Inteligencia artificial, minería de datos, cómputo distribuido                     |
+| Área                                | Temas                                                                        |
+| ----------------------------------- | ---------------------------------------------------------------------------- |
+| **Área 1 — Algoritmia**             | Algoritmos, estructuras de datos, matemáticas discretas, lógica              |
+| **Área 2 — Software de Base**       | Arquitectura de computadoras, sistemas operativos, compiladores, redes       |
+| **Área 3 — Software de Aplicación** | Ingeniería de software, lenguajes de programación, bases de datos, seguridad |
+| **Área 4 — Cómputo Inteligente**    | Inteligencia artificial, minería de datos, cómputo distribuido               |
 
 Cada área tiene dos niveles de desempeño: **Satisfactorio** (aprobatorio) y **Sobresaliente** (distinción). El tutor cubre ambos.
 
@@ -160,17 +159,17 @@ Tu perfil se construye sobre ciencia cognitiva validada.
 
 ### Qué mide
 
-| Dimensión                       | Basada en                                        | Cómo se usa                                                                                   |
-| ------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| **Autoeficacia**                | Bandura (1997)                                   | Baja → más andamiaje + encuadre de "esto es alcanzable"                                       |
-| **Metacognición**               | Flavell / Schraw                                 | Bajo automonitoreo → insertar verificaciones de comprensión                                   |
-| **Motivación**                  | Teoría de la Autodeterminación (Deci & Ryan)     | Necesidad de autonomía → ofrecer opciones; regulación externa → conectar con objetivos EGEL   |
-| **Perfil cognitivo**            | Teoría de la Carga Cognitiva                     | Tolerancia a la carga → tamaño de fragmentos; duración de foco → sugerencias de descanso      |
-| **Mentalidad**                  | Dweck (2006, refinada)                           | Patrón de indefensión → micro-pasos + celebrar; creencia de crecimiento → normalizar dificultad |
-| **Perfil de ansiedad**          | Investigación sobre ansiedad ante exámenes       | Alta ansiedad rasgo → usar "práctica" en lugar de "quiz"; reducir alcance bajo estrés         |
-| **Andamiaje (ZPD)**             | Vygotsky                                         | Avanza de modelado → guiado → independiente a medida que crece el dominio                     |
-| **Calibración de confianza**    | Monitoreo metacognitivo                          | Sobreconfiado → preguntas más difíciles; subconfiado → revelar brecha positiva                |
-| **Efectividad de estrategias**  | Analítica de aprendizaje                         | Estrategias con < 30% de efectividad tras 3 usos se marcan para reemplazo                    |
+| Dimensión                      | Basada en                                    | Cómo se usa                                                                                     |
+| ------------------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Autoeficacia**               | Bandura (1997)                               | Baja → más andamiaje + encuadre de "esto es alcanzable"                                         |
+| **Metacognición**              | Flavell / Schraw                             | Bajo automonitoreo → insertar verificaciones de comprensión                                     |
+| **Motivación**                 | Teoría de la Autodeterminación (Deci & Ryan) | Necesidad de autonomía → ofrecer opciones; regulación externa → conectar con objetivos EGEL     |
+| **Perfil cognitivo**           | Teoría de la Carga Cognitiva                 | Tolerancia a la carga → tamaño de fragmentos; duración de foco → sugerencias de descanso        |
+| **Mentalidad**                 | Dweck (2006, refinada)                       | Patrón de indefensión → micro-pasos + celebrar; creencia de crecimiento → normalizar dificultad |
+| **Perfil de ansiedad**         | Investigación sobre ansiedad ante exámenes   | Alta ansiedad rasgo → usar "práctica" en lugar de "quiz"; reducir alcance bajo estrés           |
+| **Andamiaje (ZPD)**            | Vygotsky                                     | Avanza de modelado → guiado → independiente a medida que crece el dominio                       |
+| **Calibración de confianza**   | Monitoreo metacognitivo                      | Sobreconfiado → preguntas más difíciles; subconfiado → revelar brecha positiva                  |
+| **Efectividad de estrategias** | Analítica de aprendizaje                     | Estrategias con < 30% de efectividad tras 3 usos se marcan para reemplazo                       |
 
 ### Cómo evoluciona
 
