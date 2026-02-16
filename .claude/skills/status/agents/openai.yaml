@@ -1,0 +1,14 @@
+name: status
+description: Progress dashboard showing study streak, mastered topics, weak areas, and next recommended action.
+invocation:
+  explicit: true
+  implicit: true
+  triggers:
+    - "/status"
+    - "show my progress"
+    - "how am I doing"
+    - "progress report"
+model_recommendations:
+  preferred: gpt-4o-mini
+  fallback: gpt-4o
+  note: "Primarily read-only dashboard. gpt-4o-mini is sufficient."

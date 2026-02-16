@@ -1,0 +1,14 @@
+name: quiz
+description: Dynamic assessment session. Generates questions from internal knowledge, evaluates answers, and updates progress and psyche state.
+invocation:
+  explicit: true
+  implicit: true
+  triggers:
+    - "/quiz"
+    - "take a quiz"
+    - "test my knowledge"
+    - "assess me"
+model_recommendations:
+  preferred: gpt-4o
+  fallback: o3-mini
+  note: "Requires nuanced answer evaluation and JSON state updates. GPT-4o recommended."

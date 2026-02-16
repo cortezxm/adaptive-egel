@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "moonshot/kimi-k2",
+  "small_model": "minimax/m2.1",
+  "provider": {
+    "moonshot": {
+      "name": "Moonshot AI (Kimi K2)",
+      "description": "Primary provider for adaptive study sessions — strong reasoning and instruction-following for tutoring tasks"
+    },
+    "minimax": {
+      "name": "MiniMax",
+      "description": "Secondary provider for lightweight tasks like /status dashboard and session logging"
+    }
+  }
+}

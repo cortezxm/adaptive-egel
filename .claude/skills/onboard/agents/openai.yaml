@@ -1,0 +1,14 @@
+name: onboard
+description: One-time initial psychological and knowledge assessment. Sets up psyche.json and progress.json for a new user.
+invocation:
+  explicit: true
+  implicit: true
+  triggers:
+    - "/onboard"
+    - "start onboarding"
+    - "first time setup"
+    - "configure my profile"
+model_recommendations:
+  preferred: gpt-4o
+  fallback: gpt-4o-mini
+  note: "Requires strong instruction-following and JSON generation. GPT-4o recommended."

@@ -1,6 +1,8 @@
 # Adaptive-EGEL
 
-Sistema de tutoría inteligente para el examen **EGEL Plus COMPU**, impulsado por Claude Code / Open Code. Transforma guías de estudio estáticas en una experiencia de aprendizaje personalizada y adaptativa basada en ciencia cognitiva con respaldo empírico.
+Sistema de tutoría inteligente para el examen **EGEL Plus COMPU**. Transforma guías de estudio estáticas en una experiencia de aprendizaje personalizada y adaptativa basada en ciencia cognitiva con respaldo empírico.
+
+Compatible con **Claude Code**, **Open Code**, **Gemini CLI** y **OpenAI Codex** _(sin pruebas en Codex aún)_.
 
 ---
 
@@ -19,7 +21,7 @@ Adaptive-EGEL ayuda a estudiantes de Ciencias Computacionales en México a prepa
 
 Adaptive-EGEL funciona como un conjunto de _skills_ que se ejecutan dentro de un agente de IA. Elige la herramienta que prefieras:
 
-### Opción A — Claude Code (CLI)
+### Opción A — Claude Code
 
 ```bash
 npm install -g @anthropic-ai/claude-code
@@ -33,9 +35,11 @@ npm install -g @anthropic-ai/claude-code
    ```bash
    claude
    ```
-3. Escribe `/onboard` y presiona Enter — las skills se descubren automáticamente desde `.claude/skills/`.
+3. Escribe `/onboard` — las skills se descubren automáticamente desde `.claude/skills/`.
 
-### Opción B — OpenCode (opencode.ai)
+> Modelos recomendados: `claude-sonnet-4-5` (uso diario) · `claude-opus-4-6` (sesiones complejas)
+
+### Opción B — Open Code
 
 ```bash
 curl -fsSL https://opencode.ai/install | bash
@@ -49,7 +53,54 @@ curl -fsSL https://opencode.ai/install | bash
    ```bash
    opencode
    ```
-3. Escribe `/skills` en el TUI para ver las skills disponibles y selecciona la que necesitas (por ejemplo, `onboard`, `study`, `quiz`). OpenCode descubre las skills automáticamente desde `.claude/skills/`.
+3. Escribe `/skills` en el TUI para ver las skills disponibles. Open Code las descubre automáticamente desde `.opencode/skills/` (o desde `.claude/skills/` como fallback).
+
+> Modelos recomendados: `moonshot/kimi-k2` (sesiones de estudio y quiz) · `minimax/m2.1` (tareas ligeras como `/status`)
+> La config `.opencode/opencode.json` ya incluye estas opciones y el tema `zen`.
+
+### Opción C — Gemini CLI
+
+```bash
+npm install -g @google/gemini-cli
+```
+
+1. Clona el repositorio y entra al directorio:
+   ```bash
+   git clone https://github.com/cortezxm/adaptive-egel && cd adaptive-egel
+   ```
+2. Inicia una sesión:
+   ```bash
+   gemini
+   ```
+3. Describe lo que quieres hacer en lenguaje natural — Gemini detecta la skill adecuada y te pide confirmación antes de activarla:
+   - _"Quiero comenzar mi configuración inicial"_ → activa `onboard`
+   - _"Quiero estudiar el siguiente tema de mi ruta"_ → activa `study`
+   - _"Hazme un quiz sobre el tema que estudiamos"_ → activa `quiz`
+   - _"Muéstrame mi progreso"_ → activa `status`
+
+   También puedes listar las skills disponibles con `/skills list`.
+
+> Modelos recomendados: `gemini-2.0-flash` (velocidad) · `gemini-2.0-pro` (razonamiento profundo)
+
+### Opción D — OpenAI Codex ⚠️
+
+> **Nota:** La integración con Codex está configurada pero **no ha sido probada**. Los archivos de skill están en `.agents/skills/` siguiendo el estándar Agent Skills. Reporta cualquier problema en los issues del repositorio.
+
+```bash
+npm install -g @openai/codex
+```
+
+1. Clona el repositorio y entra al directorio:
+   ```bash
+   git clone https://github.com/cortezxm/adaptive-egel && cd adaptive-egel
+   ```
+2. Inicia una sesión:
+   ```bash
+   codex
+   ```
+3. Escribe `/onboard` — las skills se descubren desde `.agents/skills/`.
+
+> Modelos recomendados: `gpt-4o` (uso general) · `o3` (sesiones de quiz complejas)
 
 ---
 
@@ -98,7 +149,7 @@ Panel con rachas, temas dominados, áreas débiles y la siguiente recomendación
 | `/quiz`    | Evaluación de 5 preguntas después de una sesión de estudio |
 | `/status`  | Ver tu panel de progreso y racha                           |
 
-> Las skills están definidas en `.claude/skills/<nombre>/SKILL.md` y son compatibles con Claude Code y OpenCode. No se requiere configuración adicional — basta con clonar el repositorio.
+> Las skills están definidas en `.claude/skills/<nombre>/SKILL.md` y son compatibles con Claude Code, Open Code, Gemini CLI y OpenAI Codex _(sin pruebas en Codex)_. No se requiere configuración adicional — basta con clonar el repositorio.
 
 ---
 
@@ -118,11 +169,16 @@ Capa de orquestación    → .claude/skills/ (skills de Claude Code sin estado)
 
 ```
 adaptive-egel/
-├── .claude/skills/
+├── .claude/skills/            # Fuente canónica de skills (Claude Code)
 │   ├── onboard/SKILL.md      # Evaluación psicológica y de conocimiento inicial
 │   ├── study/SKILL.md        # Sesión de estudio adaptativa diaria
 │   ├── quiz/SKILL.md         # Evaluación dinámica + actualización de hoja de ruta
 │   └── status/SKILL.md       # Panel de progreso
+├── .gemini/skills/            # Symlinks → .claude/skills/ (Gemini CLI)
+├── .opencode/
+│   ├── skills/                # Symlinks → .claude/skills/ (Open Code)
+│   └── opencode.json          # Config: Kimi K2 + MiniMax + tema zen
+├── .agents/skills/            # Symlinks → .claude/skills/ (OpenAI Codex, sin pruebas)
 ├── knowledge_base/
 │   ├── index_map.json         # Metadatos de temas (prerrequisitos, dificultad, área EGEL)
 │   └── guias/                 # Archivos .md de guías de estudio (uno por tema)
@@ -237,4 +293,4 @@ Si deseas **reiniciar tu perfil**, elimina o restablece `user_profile/psyche.jso
 
 - Estructura del examen EGEL-COMPU: CENEVAL (Centro Nacional de Evaluación para la Educación Superior)
 - Inspiración original: [juanQNav/Egel-computer-science](https://github.com/juanQNav/Egel-computer-science)
-- Construido con [Claude Code](https://claude.ai/code)
+- Construido con [Claude Code](https://claude.ai/code) · compatible con [Open Code](https://opencode.ai), [Gemini CLI](https://developers.google.com/gemini) y OpenAI Codex _(sin pruebas en Codex)_

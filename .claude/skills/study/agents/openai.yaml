@@ -1,0 +1,15 @@
+name: study
+description: Daily adaptive study session. Reads progress and psyche state, selects next topic from roadmap, and conducts a Socratic learning session.
+invocation:
+  explicit: true
+  implicit: true
+  triggers:
+    - "/study"
+    - "study session"
+    - "let's study"
+    - "what should I study"
+    - "review a topic"
+model_recommendations:
+  preferred: gpt-4o
+  fallback: o3-mini
+  note: "Requires multi-file reads, JSON writes, and adaptive pedagogy. GPT-4o or o3 recommended."
