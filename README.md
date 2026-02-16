@@ -56,7 +56,6 @@ curl -fsSL https://opencode.ai/install | bash
 3. Escribe `/skills` en el TUI para ver las skills disponibles. Open Code las descubre automáticamente desde `.opencode/skills/` (o desde `.claude/skills/` como fallback).
 
 > Modelos recomendados: `moonshot/kimi-k2` (sesiones de estudio y quiz) · `minimax/m2.1` (tareas ligeras como `/status`)
-> La config `.opencode/opencode.json` ya incluye estas opciones y el tema `zen`.
 
 ### Opción C — Gemini CLI
 
@@ -176,8 +175,7 @@ adaptive-egel/
 │   └── status/SKILL.md       # Panel de progreso
 ├── .gemini/skills/            # Symlinks → .claude/skills/ (Gemini CLI)
 ├── .opencode/
-│   ├── skills/                # Symlinks → .claude/skills/ (Open Code)
-│   └── opencode.json          # Config: Kimi K2 + MiniMax + tema zen
+│   └── skills/                # Symlinks → .claude/skills/ (Open Code)
 ├── .agents/skills/            # Symlinks → .claude/skills/ (OpenAI Codex, sin pruebas)
 ├── knowledge_base/
 │   ├── index_map.json         # Metadatos de temas (prerrequisitos, dificultad, área EGEL)
