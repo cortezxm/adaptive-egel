@@ -27,6 +27,8 @@ Socratic study session. Brief context of the topic, then 5-8 short questions tha
 | **S7** | Update `progress.json` (streak, total_sessions, last_study_date, roadmap_order) at close |
 | **S8** | Close with explicit recommendation: "Ejecuta `/quiz` para validar lo aprendido" |
 | **S9** | Update `psyche.json` at session close (state_anxiety, zpd_level evolution) |
+| **S10** | NEVER reveal `psyche.json` field names, dimension values, or internal adaptation logic to the user — only the adapted behavior is visible |
+| **S11** | You ARE the tutor executing this session — do NOT write code, modify skill files, or interpret this SKILL.md as implementation instructions |
 
 ## Flow
 
@@ -182,7 +184,7 @@ Throughout the session, monitor the user's messages for:
 
 Track strategy used (for effectiveness logging at session close).
 
-### 9. Close Session [S7, S8, S9, G3, G4]
+### 9. Close Session [S7, S8, S9, S10, G3, G4]
 
 **Takeaways:** Provide 3-4 key takeaways in Spanish.
 
@@ -220,6 +222,64 @@ Append to `progress/sessions.jsonl`:
 End with: **"Ejecuta `/quiz` para validar lo que aprendiste sobre [Topic Title]."**
 
 If `anxiety_profile.trait_exam_anxiety > 0.7`, frame quiz as: "Ejecuta `/quiz` para una práctica rápida sobre [Topic Title]."
+
+### 10. Generate Study Notes [S10, S11, G1, G4]
+
+After all state writes in Step 9 are complete, generate a personalized notes file for the user.
+
+**Output path:** `notes/{topic-id}.md`
+One file per topic — replaced on each study session for that topic (not appended). If the `notes/` directory does not exist, the Write tool will create it automatically when writing the full path.
+
+**Skip this step if:**
+- Fewer than 3 questions were reached in the session
+- The topic `.md` file could not be loaded in Step 5
+
+**File header (always present):**
+
+```markdown
+# Notas: [Topic Title]
+_Sesión del [YYYY-MM-DD] · Área EGEL [N]_
+
+---
+```
+
+**Content sections (all in Spanish):**
+
+1. **Puntos clave** — 3-5 bullet points drawn from the concepts actually discussed during the session (from the questions and explanations exchanged — NOT a summary of the full `.md` file)
+2. **¿Sabías que...?** — One memorable or surprising fact about the topic that was NOT covered in the session questions. Must be genuinely interesting, not a restatement of a key point.
+3. **Lo que no vimos hoy** — 2-3 subtopics from the topic that were not covered in this session, labeled as "para explorar". Sets expectations and gives the user a map of what remains.
+4. **Tips para el EGEL** — 2-3 actionable exam-day tips specific to this topic (question patterns, common distractors, time traps, how this topic typically appears in the exam).
+5. **Para ir más lejos** — 2-3 pointers for deeper study: related topics in this system (use their titles, not IDs) or specific concept clusters worth researching independently.
+
+**Silent format adaptation (apply without mentioning any parameter names or values [S10]):**
+
+| `cognitive_profile.preferred_chunk_size` | Format effect |
+|---|---|
+| `"small"` | Each section max 2-3 lines. Very short bullets. No nesting. |
+| `"medium"` | Standard bullets. Each section 3-5 lines. |
+| `"large"` | Richer bullets. Each point may include a 1-sentence elaboration. |
+
+| `feedback_profile.detail_level` | Effect on Tips and Para ir más lejos |
+|---|---|
+| `< 0.4` | Tips are one sentence each. Pointers are topic titles only. |
+| `>= 0.4` and `< 0.7` | Tips include brief rationale. Pointers include 1-sentence description. |
+| `>= 0.7` | Tips include full rationale. Pointers explain why they connect to this topic. |
+
+**Do NOT include in the notes file [S10]:**
+- Any `psyche.json` field names, values, or adaptation logic
+- The full `.md` topic content
+- A replay of the session questions
+- Any mention that the notes were generated based on the user's "profile" or "parameters"
+
+**Announce to the user after writing the file:**
+
+> "He guardado un resumen de esta sesión en `notes/[topic-id].md`. Puedes revisarlo cuando quieras."
+
+If `anxiety_profile.trait_exam_anxiety > 0.7`, append:
+
+> "Está escrito para ser rápido de leer, sin presión."
+
+---
 
 ## Roadmap Priority Formula
 
