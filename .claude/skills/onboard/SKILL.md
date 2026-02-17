@@ -331,16 +331,20 @@ After all questions, internally map responses to psyche.json v2 fields:
   - `zpd_level: "guided"` → `"socratic_guided"`
   - `zpd_level: "independent"` → `"minimal_scaffolding"`
   - `zpd_level: "structured"` → `"step_by_step"`
+- `preferred_methodology`:
+  - `zpd_level: "independent"` AND `autonomy_need > 0.6` → `"pbl"`
+  - `metacognition.self_monitoring < 0.4` → `"feynman"`
+  - else → `"socratic"`
 - `frustration` strategy:
   - `failure_response: "helplessness"` → `"micro_step_and_celebrate"`
   - `failure_response: "avoidance"` → `"switch_topic"`
-  - `failure_response: "persistence"` → `"switch_to_analogy"`
+  - `failure_response: "persistence"` → `"switch_to_feynman"`
 - `high_anxiety` strategy:
   - `trait_exam_anxiety > 0.7` → `"breathing_and_reduce_scope"`
   - else → `"reduce_scope_and_celebrate"`
 - `overconfidence` strategy:
   - `calibration_gap > 0.15` (post-quiz) → `"challenge_with_edge_cases"`
-- `plateau` strategy → always `"introduce_interleaving"`
+- `plateau` strategy → always `"switch_to_pbl"`
 - `streak_broken` strategy → always `"normalize_and_reconnect"`
 
 **Initialize confidence_calibration:** Set `by_area[X].predicted` = `self_efficacy.by_area[X]` (initial self-assessment serves as baseline prediction).

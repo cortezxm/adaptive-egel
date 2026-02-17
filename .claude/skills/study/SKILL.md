@@ -7,7 +7,7 @@ description: "Use this skill when the user runs /study, says they want to study,
 
 ## Purpose
 
-Socratic study session. Brief context of the topic, then 5-8 short questions that guide the user to discover concepts themselves. No long text blocks. If the user answers wrong: brief explanation + move on. All pedagogy is driven by evidence-based dimensions from `psyche.json` v2.
+Adaptive study session using one of three methodologies (Socratic, Feynman, or PBL) selected based on user profile and topic state. Brief context of the topic, then interactive learning driven by the selected methodology. If the user answers wrong: brief explanation + move on. All pedagogy is driven by evidence-based dimensions from `psyche.json` v2.
 
 ## MANDATORY Actions
 
@@ -49,7 +49,7 @@ Read the last 5 entries from `progress/sessions.jsonl`. Analyze:
 - **Sustained anxiety:** If `metrics.stress` is `"alto"` in 3+ of the last 5 sessions → activate `active_strategies.high_anxiety` at the start of this session (open with a normalizing message before content)
 - **Improving scores trend:** If quiz scores have been rising in the last 3 sessions → consider moving `scaffolding.zpd_level` one step toward `"independent"` during this session
 - **Streak broken:** If `study_streak` in `progress.json` is 1 AND previous sessions show a gap → trigger `active_strategies.streak_broken` in the opening message (normalize lapse, reconnect to motivation)
-- **Plateau:** If the same topic appears in the last 3 sessions without score improvement → consider applying `active_strategies.plateau` (introduce interleaving with a related topic)
+- **Plateau:** If the same topic appears in the last 3 sessions without score improvement → flag for methodology selection in Section 6.6 (will trigger PBL to approach the material from a different angle)
 
 ### 3. Select Topic
 
@@ -159,16 +159,47 @@ After calibrating pedagogy, evaluate whether the selected topic is a **weak topi
 
 **If no condition is true**, proceed with the standard zpd_level from `psyche.json`.
 
-### 7. Socratic Session [S3, S5, G1]
+### 6.6. Methodology Selection
 
-**The session is question-driven, not lecture-driven.** Avoid long text blocks — with the exception of the teaching foundation phase (Section 7a, weak topics only), expanded error explanations for weak topics (Section 7c), and consecutive failure escalation (Section 7c-escalation), which provide targeted exposition to build missing knowledge before resuming questions.
+After determining topic weakness, select the teaching methodology for this session. The three available methodologies are:
+
+| Methodology | Key idea | Session structure |
+|---|---|---|
+| **Socratic** (default) | Guided discovery through questions | 5-8 questions, one at a time (Section 7b) |
+| **Feynman** | "Teach it back to me" | 4-5 present-explain cycles (Section 7b-feynman) |
+| **PBL** | Problem-based learning around a scenario | 1 scenario with 5-6 progressive sub-problems (Section 7b-pbl) |
+
+**Selection logic (evaluated top-to-bottom, first match wins):**
+
+1. **Weak topics (per Section 6.5) → always Socratic.** Weak topics need the teaching foundation + structured scaffolding that Socratic provides. Never use Feynman or PBL on weak topics.
+2. **Overconfident user → Feynman.** If `confidence_calibration.pattern == "overconfident"`, use Feynman — asking the user to explain exposes gaps that self-assessment misses.
+3. **Low metacognition on non-weak topics → Feynman.** If `metacognition.self_monitoring < 0.4` AND the topic is not weak, use Feynman to build self-monitoring through teaching.
+4. **Plateau detected → PBL.** If trend analysis (Section 2) detected a plateau on this topic (same topic in last 3 sessions without score improvement), use PBL to approach the material from a different angle.
+5. **High autonomy → PBL.** If `motivation.autonomy_need > 0.6` AND `self_efficacy.by_area[topic.egel_area] >= 0.5`, use PBL — autonomous learners thrive with scenario-based discovery.
+6. **Preferred methodology from psyche.json.** If `active_strategies.preferred_methodology` is set and none of the above triggered, use it.
+7. **Default → Socratic.**
+
+**Frustration mid-session switch:** If burnout detection (Section 8) detects frustration during a Socratic session, switch to Feynman for the next 1-2 interactions. Explaining is less pressured than being questioned. After 1-2 Feynman cycles, resume Socratic or close the session depending on remaining questions.
+
+**Log the selected methodology** for session logging in Section 9.
+
+### 7. Adaptive Session [S3, S5, G1]
+
+**The session is interactive, not lecture-driven.** The structure depends on the methodology selected in Section 6.6. Regardless of methodology, avoid long text blocks — with the exception of the teaching foundation phase (Section 7a, weak topics only), expanded error explanations for weak topics (Section 7c), PBL scenario setup (Section 7b-pbl), and consecutive failure escalation (Section 7c-escalation), which provide targeted exposition to build missing knowledge before resuming interaction.
 
 #### 7a. Topic Introduction
 
 The depth of the introduction depends on whether this is a **weak topic** (determined in Section 6.5).
 
 **If NOT a weak topic (standard path):**
-Give a brief context (2-3 sentences): what the topic is, why it matters for the EGEL, and which subtopics you will explore. This is the only expository text before questions begin.
+Give a brief context (2-3 sentences): what the topic is, why it matters for the EGEL, and which subtopics you will explore.
+
+**Knowledge bridge (all topics, weak or not):** After the introduction (or after the teaching foundation for weak topics), add a brief paragraph connecting this topic to previously studied material:
+- Only bridge to topics with `attempts > 0` in `progress.json`
+- Maximum 2 connections per introduction
+- Use `prerequisites` and `egel_area` from `index_map.json` to find related topics
+- Example: "En Análisis de Algoritmos vimos la complejidad temporal. Hoy veremos cómo la elección de estructura de datos afecta directamente esa complejidad."
+- If no topics have been attempted yet, skip the bridge entirely
 
 **If weak topic (teaching foundation phase):**
 Before asking any Socratic questions, provide a **teaching foundation** that gives the user enough knowledge to engage productively:
@@ -185,23 +216,66 @@ Before asking any Socratic questions, provide a **teaching foundation** that giv
 - This does NOT replace the Socratic questions — it precedes them. The session still asks 5-8 questions after the foundation.
 - **Independent users exception:** If the user's persisted `zpd_level` is `"independent"`, shorten the teaching foundation to a single-paragraph orientation (no worked example). They still need context on unseen material, but less scaffolding.
 
-#### 7b. Socratic Questions (5-8 questions, one at a time)
+#### 7b. Socratic Questions (when methodology == "socratic")
 
-Ask short, focused questions that guide the user to discover concepts. **One question per message, wait for response.** See Section 7e for pacing checkpoints every 2-3 questions.
+**5-8 questions, one at a time.** Ask short, focused questions that guide the user to discover concepts. **One question per message, wait for response.** See Section 7e for pacing checkpoints every 2-3 questions.
 
 - Start with Nivel Satisfactorio concepts (fundamental)
 - Progress to Nivel Sobresaliente concepts (advanced) in later questions
 - Style calibrated to `zpd_level` (see Section 6)
 
+#### 7b-feynman. Feynman Technique (when methodology == "feynman")
+
+**4-5 present-explain cycles.** The flow shifts from question-answer to **present-explain-evaluate**:
+
+1. **Present** a concept (2-3 sentences synthesized from the loaded content)
+2. **Ask the user to explain it back** in their own words
+3. **Evaluate** the explanation for comprehension depth (see Section 7f):
+   - **Superficial** (recall-level): Identify the specific gap, provide a mini-explanation (2-3 sentences), ask the user to re-explain that part
+   - **Deep** (comprehension or higher): Acknowledge the quality, add one insight, move to next concept
+4. **Max 1 re-explanation loop per concept** to stay within token budget
+
+**Prompts for the explain step (rotate across cycles, never repeat in the same session):**
+- "Explícame esto como si yo no supiera nada del tema."
+- "¿Cómo le dirías esto a un compañero que nunca ha visto este concepto?"
+- "Intenta explicarlo sin usar términos técnicos."
+- "Si tuvieras que resumir esto en una sola oración, ¿qué dirías?"
+
+**Coverage:** 4-5 Feynman cycles cover roughly equivalent ground to 5-8 Socratic questions. Start with Satisfactorio-level concepts, progress to Sobresaliente.
+
+**Micro-pauses and pacing checkpoints (7d-bis, 7e) apply the same way** — after evaluating each explanation, include a micro-pause; insert pacing checkpoints every 2-3 cycles.
+
+#### 7b-pbl. Problem-Based Learning (when methodology == "pbl")
+
+**1 scenario with 5-6 progressive sub-problems.** The session revolves around an authentic scenario:
+
+1. **Present the scenario** (1 paragraph): A realistic computing situation relevant to the EGEL topic. Keep it concrete and engaging.
+2. **Progressive sub-problems** (5-6, one at a time): Each builds on the previous one. Start at Satisfactorio difficulty, escalate to Sobresaliente.
+3. **If the user gets stuck**: Provide the answer with a brief explanation and continue. PBL never stalls — momentum matters more than individual correctness.
+4. **Wrap-up**: Summarize which concepts emerged from the problem and how they connect.
+
+**Example scenarios by area:**
+- Matemáticas Discretas: "Estás diseñando un sistema de rutas para entregas con 6 puntos de distribución..." → grafos, caminos mínimos
+- Bases de Datos: "Una startup te contrata para diseñar la BD de su app de entregas..." → normalización, modelo ER
+- Redes: "Detectas tráfico sospechoso en la red de tu empresa..." → protocolos, seguridad
+
+**Token cost:** ~2-3k additional vs. Socratic (the scenario persists in context). Within the 20-30k budget.
+
+**Micro-pauses and pacing checkpoints (7d-bis, 7e) apply** — after each sub-problem response, include a micro-pause; insert pacing checkpoints every 2-3 sub-problems.
+
 #### 7c. Error Handling
 
 When the user answers incorrectly:
 1. Apply `feedback_profile.directness` and `emotional_support` (see Section 6)
-2. **Explanation depth depends on topic familiarity:**
+2. **Assess *how* the answer was wrong** (informs comprehension depth tracking in Section 7f):
+   - **Attempt with partial reasoning** → the user has some understanding; less scaffolding needed
+   - **Repeated content without reasoning** → surface-level recall only; more scaffolding needed
+   - **Said "no sé" / "no lo sé" / "ni idea"** → determine if it's a knowledge gap or a confidence gap (check `confidence_calibration.pattern`)
+3. **Explanation depth depends on topic familiarity:**
    - **If topic is weak (per Section 6.5):** Expanded explanation (4-6 sentences) that reconnects to the foundational concepts from 7a. Use an analogy or mini-example to rebuild the missing mental model. Scale by `feedback_profile.detail_level`. These explanations serve a *teaching* purpose, not just correction — they are the primary mechanism for building understanding when the user lacks prior knowledge.
    - **If topic is NOT weak:** Brief explanation (2-3 sentences) aligned to `feedback_profile.detail_level`.
-3. **One key insight** to anchor the concept
-4. **Move to the next question** — do not re-ask the same question
+4. **One key insight** to anchor the concept
+5. **Move to the next question** — do not re-ask the same question
 
 #### 7c-escalation. Consecutive Failure Escalation
 
@@ -223,8 +297,10 @@ When the threshold is reached:
 
 When the user answers correctly:
 1. Apply `feedback_profile.celebration_preference`
-2. **One additional insight** that deepens understanding (optional, only if relevant)
-3. Move to next question
+2. **Assess comprehension depth** (see Section 7f) — silently classify the response
+3. **If the response reaches Transfer level** (connects to other topics, identifies limitations, asks a sophisticated question): explicitly recognize it — "Excelente conexión — eso demuestra que realmente entiendes el concepto."
+4. **One additional insight** that deepens understanding (optional, only if relevant)
+5. Move to next question
 
 #### 7d-bis. Per-Question Micro-Pause [S12]
 
@@ -261,6 +337,34 @@ After every 2-3 questions, pause and invite the user to ask clarifying questions
 
 **Interaction with metacognition checks:** If a metacognition check (for `self_monitoring < 0.4`) falls on the same question as a pacing checkpoint, combine them into a single natural pause — do not stack two separate interruptions.
 
+#### 7f. Comprehension Depth Assessment (all methodologies)
+
+For each user response — whether answering a Socratic question, explaining a Feynman concept, or solving a PBL sub-problem — silently classify the response on a simplified Bloom's taxonomy scale:
+
+| Level | Indicator | Score |
+|---|---|---|
+| **Recall** | Repeats a definition or fact from the material | 0.4 |
+| **Comprehension** | Reformulates in own words, explains the "why" | 0.6 |
+| **Application** | Uses the concept in a new example or solves a variation | 0.8 |
+| **Transfer** | Connects to another topic, identifies limitations, asks a sophisticated question | 1.0 |
+
+**Usage:**
+- Track the depth score for each response silently (do not reveal scores to the user)
+- Compute the average comprehension depth across all responses in the session
+- Log the average as `"comprehension_depth"` in `sessions.jsonl` (see Section 9)
+- This metric informs `/quiz` difficulty calibration and `metacognition.calibration_accuracy` evolution
+
+**Do NOT announce depth levels to the user.** The only visible effect is the Transfer-level recognition in Section 7d.
+
+#### 7g. Knowledge Bridge Mid-Session
+
+During the session flow (regardless of methodology), when a concept naturally connects to a previously studied topic:
+
+- Insert a brief bridge: "Esto es similar a [concepto] que vimos en [Topic Title]. La diferencia clave es..."
+- **Maximum 2 bridges per session** (beyond the introduction bridge in 7a)
+- **Only bridge to topics with `score >= 60` in `progress.json`** — bridging to poorly understood topics creates confusion
+- **Keep bridges to 1-2 sentences** — they should feel like natural asides, not detours
+
 ### 8. Passive Burnout Detection [S6]
 
 Throughout the session, monitor the user's messages for:
@@ -269,7 +373,7 @@ Throughout the session, monitor the user's messages for:
 - **Disengagement**: very short responses, "ok", "sí", single words repeatedly
 
 **If detected, adapt silently using `active_strategies`:**
-- Apply `active_strategies.frustration` (e.g., `switch_to_analogy` → pivot to a real-world analogy)
+- Apply `active_strategies.frustration` (e.g., `switch_to_feynman` → switch to Feynman technique for 1-2 interactions where explaining replaces being questioned; see Section 6.6 frustration mid-session switch)
 - Reduce complexity, focus on one subtopic instead of many
 - Add encouraging language calibrated to `mindset.failure_response`
   - `failure_response: "helplessness"` → break concept into micro-steps, celebrate each one
@@ -310,7 +414,7 @@ Read `user_profile/psyche.json`, then update (damping rule: no field changes by 
 **Log session [G3]:**
 Append to `progress/sessions.jsonl`:
 ```json
-{"date":"<YYYY-MM-DD>","skill":"/study","topic":"<topic-id>","details":"session-complete","metrics":{"stress":"<state_anxiety level>","streak":<number>,"zpd_level":"<current>","strategies_used":["<list>"]}}
+{"date":"<YYYY-MM-DD>","skill":"/study","topic":"<topic-id>","details":"session-complete","metrics":{"stress":"<state_anxiety level>","streak":<number>,"zpd_level":"<current>","methodology":"<socratic|feynman|pbl>","comprehension_depth":<0.0-1.0 average>,"bridges_used":["<topic-id-1>","<topic-id-2>"],"strategies_used":["<list>"]}}
 ```
 
 **Recommendation [S8]:**

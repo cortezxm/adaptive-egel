@@ -140,8 +140,9 @@ Evidence-based dimensions replacing debunked VARK learning styles (Pashler et al
   },
   "active_strategies": {
     "default_pedagogy": "socratic_guided",
-    "frustration": "switch_to_analogy",
-    "plateau": "introduce_interleaving",
+    "preferred_methodology": "socratic",
+    "frustration": "switch_to_feynman",
+    "plateau": "switch_to_pbl",
     "high_anxiety": "reduce_scope_and_celebrate",
     "overconfidence": "challenge_with_edge_cases",
     "underconfidence": "scaffold_and_celebrate_small_wins",
@@ -205,7 +206,7 @@ Contains:
 Append-only JSONL (one JSON object per line). Each entry:
 
 ```json
-{"date":"2026-02-15","skill":"/study","topic":"discrete-mathematics","details":"session-complete","metrics":{"stress":"low","duration_min":25}}
+{"date":"2026-02-15","skill":"/study","topic":"discrete-mathematics","details":"session-complete","metrics":{"stress":"low","duration_min":25,"methodology":"socratic","comprehension_depth":0.6,"bridges_used":["algorithmics-analysis-design"]}}
 ```
 
 ---
@@ -220,17 +221,23 @@ Append-only JSONL (one JSON object per line). Each entry:
 
 ### `/study`
 
-**Purpose:** Daily study session with adaptive content and stress detection.
+**Purpose:** Daily study session with adaptive content, methodology selection, and stress detection.
+
+**Methodologies:** Socratic (guided discovery), Feynman (teach-it-back), PBL (problem-based learning). Selected automatically based on `psyche.json` profile and topic state. Weak topics always use Socratic.
 
 **Flow:**
 
 1. Read `progress.json` + `psyche.json`
 2. Optimize roadmap (prioritize topics with score < 70%, respect prerequisites)
 3. Load main topic + prerequisites from `knowledge_base/` (lazy loading, max ~50-100k tokens)
-4. Present material conversationally using scaffolding-based pedagogy (zpd_level, self_efficacy, motivation)
-5. Passively detect stress and burnout; adapt silently using `active_strategies`
-6. Evolve `psyche.json` at close (state_anxiety, zpd_level)
-7. End with recommendation to run `/quiz`
+4. Select methodology (Socratic/Feynman/PBL) based on profile signals
+5. Present material using selected methodology with scaffolding-based pedagogy
+6. Track comprehension depth (Bloom's taxonomy: recall → transfer) silently
+7. Insert knowledge bridges to previously studied topics (max 2 per session)
+8. Passively detect stress and burnout; adapt silently using `active_strategies`
+9. Evolve `psyche.json` at close (state_anxiety, zpd_level)
+10. Log methodology, comprehension_depth, and bridges_used to `sessions.jsonl`
+11. End with recommendation to run `/quiz`
 
 **Token Budget:** ~20-30k per session, ~$0.05-0.10 cost
 

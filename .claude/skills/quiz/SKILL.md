@@ -76,6 +76,10 @@ Based on the topic's current state in `progress.json`:
 | `score 70-84` | Satisfactorio (applied concepts) |
 | `score >= 85` | Sobresaliente (analysis, edge cases, complex scenarios) |
 
+**Comprehension depth adjustment:** Read the most recent `/study` session for this topic from `progress/sessions.jsonl`. If `metrics.comprehension_depth` is present:
+- If `comprehension_depth >= 0.8` (Application/Transfer level): bump difficulty one level up — the user demonstrated deep understanding during study
+- If `comprehension_depth <= 0.4` (Recall level): keep difficulty at or below the standard level — the user needs more practice at fundamentals
+
 **Overconfidence adjustment:** If `confidence_calibration.pattern == "overconfident"`:
 - Present harder questions one level above the standard difficulty
 - Include at least one edge case or counterexample question

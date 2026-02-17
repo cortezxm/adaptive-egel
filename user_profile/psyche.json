@@ -83,8 +83,9 @@
 
   "active_strategies": {
     "default_pedagogy": "socratic_guided",
-    "frustration": "switch_to_analogy",
-    "plateau": "introduce_interleaving",
+    "preferred_methodology": "socratic",
+    "frustration": "switch_to_feynman",
+    "plateau": "switch_to_pbl",
     "high_anxiety": "reduce_scope_and_celebrate",
     "overconfidence": "challenge_with_edge_cases",
     "underconfidence": "scaffold_and_celebrate_small_wins",
