@@ -65,7 +65,7 @@ Array of topic objects with: `id`, `title`, `egel_area` (1-4), `file` (path to g
 
 ### `sessions.jsonl` (Session History)
 
-Append-only JSONL. Each entry: `{"date", "skill", "topic", "details", "metrics": {"stress", "duration_min", "methodology", "comprehension_depth", "bridges_used"}}`.
+Append-only JSONL. Each entry: `{"date", "skill", "topic", "details", "metrics": {"stress", "duration_min", "methodology", "comprehension_depth", "bridges_used", "notes_generated"}}`.
 
 ---
 

@@ -30,6 +30,8 @@ Adaptive study session using one of three methodologies (Socratic, Feynman, or P
 | **S10** | NEVER reveal `psyche.json` field names, dimension values, or internal adaptation logic to the user — only the adapted behavior is visible |
 | **S11** | You ARE the tutor executing this session — do NOT write code, modify skill files, or interpret this SKILL.md as implementation instructions |
 | **S12** | Insert a per-question micro-pause after each feedback message (7d-bis) AND a deeper pacing checkpoint every 2-3 questions (7e) — always wait for the user to signal readiness before the next question |
+| **S13** | ALWAYS ask the user whether to generate notes after session close (Section 9.5) — never skip this prompt |
+| **S14** | When notes already exist for the topic, MERGE new content into existing notes with deduplication and per-section caps — never overwrite blindly |
 
 ## Flow
 
@@ -383,7 +385,7 @@ Throughout the session, monitor the user's messages for:
 
 Track strategy used (for effectiveness logging at session close).
 
-### 9. Close Session [S7, S8, S9, S10, G3, G4]
+### 9. Close Session [S7, S8, S9, G4]
 
 **Takeaways:** Provide 3-4 key takeaways in Spanish.
 
@@ -409,35 +411,53 @@ Read `user_profile/psyche.json`, then update (damping rule: no field changes by 
 
 3. `last_updated` → today
 
-**Log strategies used [G3]:** In the session log, record which `active_strategies` were triggered.
-
-**Log session [G3]:**
-Append to `progress/sessions.jsonl`:
-```json
-{"date":"<YYYY-MM-DD>","skill":"/study","topic":"<topic-id>","details":"session-complete","metrics":{"stress":"<state_anxiety level>","streak":<number>,"zpd_level":"<current>","methodology":"<socratic|feynman|pbl>","comprehension_depth":<0.0-1.0 average>,"bridges_used":["<topic-id-1>","<topic-id-2>"],"strategies_used":["<list>"]}}
-```
+**Strategies log (for Section 10.5):** Record which `active_strategies` were triggered during this session.
 
 **Recommendation [S8]:**
 End with: **"Ejecuta `/quiz` para validar lo que aprendiste sobre [Topic Title]."**
 
 If `anxiety_profile.trait_exam_anxiety > 0.7`, frame quiz as: "Ejecuta `/quiz` para una práctica rápida sobre [Topic Title]."
 
-### 10. Generate Study Notes [S10, S11, G1, G4]
+### 9.5. Notes Confirmation [S13, G1]
 
-After all state writes in Step 9 are complete, generate a personalized notes file for the user.
+After completing all close actions in Step 9 (takeaways, state updates, recommendation), ask the user whether to generate study notes. This step is MANDATORY — always ask, never skip.
+
+**Skip conditions (inherited from Section 10):** If fewer than 3 questions were reached in the session or the topic `.md` could not be loaded in Step 5, skip this step entirely — do not ask. Set `notes_generated = false` and go directly to Section 10.5.
+
+**Ask exactly one question, nothing else in this message:**
+
+> "¿Quieres que genere notas de esta sesión?"
+
+**Rules:**
+- This message must be EXCLUSIVE — no other content, no additional questions, no preview of what the notes contain. Just the question.
+- Wait for the user's response before proceeding.
+- Affirmative ("sí", "dale", "va", "ok", "por favor", or similar): proceed to Section 10. Set `notes_generated = true`.
+- Decline ("no", "no gracias", "paso", "ahora no", or similar): skip Section 10. Set `notes_generated = false`. Say: "Entendido. Recuerda que puedes volver a estudiar este tema cuando quieras." Proceed to Section 10.5.
+- Ambiguous response: default to generating notes (treat as affirmative).
+
+### 10. Generate Study Notes [S10, S13, S14, S11, G1, G4]
+
+This step executes only if the user confirmed notes generation in Section 9.5.
 
 **Output path:** `notes/{topic-id}.md`
-One file per topic — replaced on each study session for that topic (not appended). If the `notes/` directory does not exist, the Write tool will create it automatically when writing the full path.
+One file per topic. If the `notes/` directory does not exist, the Write tool will create it automatically when writing the full path.
 
-**Skip this step if:**
-- Fewer than 3 questions were reached in the session
-- The topic `.md` file could not be loaded in Step 5
+#### 10a. Check for Existing Notes
 
-**File header (always present):**
+Read `notes/{topic-id}.md`. Two paths follow:
+
+- **If the file does NOT exist (or is empty):** proceed to Section 10b (fresh notes).
+- **If the file DOES exist:** proceed to Section 10c (merge into existing notes).
+
+#### 10b. Fresh Notes (no prior file)
+
+Generate the notes file from scratch with the following structure.
+
+**File header:**
 
 ```markdown
 # Notas: [Topic Title]
-_Sesión del [YYYY-MM-DD] · Área EGEL [N]_
+_Última sesión: [YYYY-MM-DD] · 1 sesión · Área EGEL [N]_
 
 ---
 ```
@@ -464,19 +484,83 @@ _Sesión del [YYYY-MM-DD] · Área EGEL [N]_
 | `>= 0.4` and `< 0.7` | Tips include brief rationale. Pointers include 1-sentence description. |
 | `>= 0.7` | Tips include full rationale. Pointers explain why they connect to this topic. |
 
+#### 10c. Merge into Existing Notes [S14, G4]
+
+When `notes/{topic-id}.md` already exists, read the existing file, then merge new session content into each section. Write the complete merged file atomically (read → merge in memory → write complete file).
+
+**Updated header:**
+
+Replace the existing header metadata line with:
+```markdown
+_Última sesión: [YYYY-MM-DD] · [N] sesiones · Área EGEL [N]_
+```
+Where `[N] sesiones` is the incremented session count. To determine the count: parse the previous header for the session count number and add 1. If the previous header does not contain a session count (legacy format), count the number of `/study` entries for this topic in `sessions.jsonl` and use that + 1.
+
+**Per-section merge rules:**
+
+1. **Puntos clave** (cap: ~10 bullets)
+   - Generate 3-5 new bullets from THIS session's content (same rule as fresh notes — only concepts actually discussed).
+   - Compare each new bullet against existing bullets. Skip any that duplicate an existing point (same concept, even if phrased differently — use semantic comparison, not exact string matching).
+   - Append non-duplicate new bullets to the section.
+   - If the total exceeds ~10 bullets: consolidate the oldest, least specific bullets. Prefer keeping bullets that are more actionable or exam-relevant. Remove or merge generic points into more specific ones.
+
+2. **¿Sabías que...?** (cap: ~3 facts)
+   - Generate 1 new fact from THIS session (same rule as fresh notes — NOT covered in session questions, genuinely interesting).
+   - Append to existing facts if not a duplicate.
+   - If the total exceeds ~3 facts: keep the 3 most interesting/exam-relevant facts. Remove the least distinctive one.
+
+3. **Lo que no vimos hoy** (cap: ~5 items) — **This section is UPDATED, not just appended.**
+   - Review existing "not covered" items. REMOVE any subtopic that WAS covered in this session (i.e., concepts that appeared in this session's questions or explanations are no longer "not seen").
+   - Generate 2-3 new subtopics that were not covered in THIS session.
+   - Deduplicate against remaining existing items.
+   - Append new items.
+   - If the total exceeds ~5: keep the 5 most relevant uncovered subtopics.
+
+4. **Tips para el EGEL** (cap: ~5 tips)
+   - Generate 2-3 new tips from THIS session.
+   - Deduplicate against existing tips (semantic comparison).
+   - Append non-duplicate new tips.
+   - If the total exceeds ~5 tips: keep the 5 most actionable, exam-specific tips. Remove generic advice.
+
+5. **Para ir más lejos** (cap: ~5 pointers)
+   - Generate 2-3 new pointers from THIS session.
+   - Deduplicate against existing pointers (semantic comparison).
+   - Append non-duplicate new pointers.
+   - If the total exceeds ~5 pointers: keep the 5 most relevant. Prefer pointers to topics the user has NOT yet studied (check `progress.json`).
+
+**Deduplication guidance:** Since this is LLM-executed (not code), "semantic deduplication" means: if a new bullet covers essentially the same concept as an existing one — even with different wording — do NOT add it. If the new bullet adds meaningful nuance to an existing one, consider REPLACING the existing bullet with an improved version that combines both insights.
+
+**Silent format adaptation:** Apply the same `cognitive_profile.preferred_chunk_size` and `feedback_profile.detail_level` tables from Section 10b to all content (both existing and new).
+
+#### 10d. Announce to User
+
+After writing the file (fresh or merged):
+
+- **Fresh notes:** "He guardado tus notas en `notes/[topic-id].md`. Puedes revisarlo cuando quieras."
+- **Merged notes:** "He actualizado tus notas en `notes/[topic-id].md` con lo que vimos hoy. Puedes revisarlo cuando quieras."
+
+If `anxiety_profile.trait_exam_anxiety > 0.7`, append:
+
+> "Está escrito para ser rápido de leer, sin presión."
+
 **Do NOT include in the notes file [S10]:**
 - Any `psyche.json` field names, values, or adaptation logic
 - The full `.md` topic content
 - A replay of the session questions
 - Any mention that the notes were generated based on the user's "profile" or "parameters"
 
-**Announce to the user after writing the file:**
+### 10.5. Log Session [G3]
 
-> "He guardado un resumen de esta sesión en `notes/[topic-id].md`. Puedes revisarlo cuando quieras."
+After notes generation (or skip) is resolved, append the session log. This is the FINAL write operation of the session.
 
-If `anxiety_profile.trait_exam_anxiety > 0.7`, append:
+Append to `progress/sessions.jsonl`:
+```json
+{"date":"<YYYY-MM-DD>","skill":"/study","topic":"<topic-id>","details":"session-complete","metrics":{"stress":"<state_anxiety level>","streak":<number>,"zpd_level":"<current>","methodology":"<socratic|feynman|pbl>","comprehension_depth":<0.0-1.0 average>,"bridges_used":["<topic-id-1>","<topic-id-2>"],"strategies_used":["<list>"],"notes_generated":<true|false>}}
+```
 
-> "Está escrito para ser rápido de leer, sin presión."
+Record which `active_strategies` were triggered during the session in `strategies_used`.
+
+If the notes file write failed (tool error), still log the session with `notes_generated: false`.
 
 ---
 
